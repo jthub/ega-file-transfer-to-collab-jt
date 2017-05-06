@@ -20,6 +20,8 @@ workflow:
       type: string
     submitter_sample_id:
       type: string
+    ega_sample_id:
+      type: string
     icgc_sample_id:
       type: string
     submitter_donor_id:
@@ -30,15 +32,19 @@ workflow:
       type: string
     bundle_type: # experiement or analysis
       type: string
-    bundle_id:
+    bundle_id:   # either EGAR or EGAX ID
       type: string
     library_strategy:
       type: string
-    metadata_git_repo:
+    ega_metadata_git_repo:
       type: string
-    metadata_path:
+    ega_metadata_path:
       type: string
-    files:
+    ega_metadata_file_name:
+      type: string
+    ega_metadata_object_id:  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+      type: string
+    ega_files:
       type: array
       items:
         type: object
@@ -47,11 +53,11 @@ workflow:
             type: string
           file_name:
             type: string
-          file_size:
+          file_size:  # can remove this if it's not avaiable at EGA
             type: integer
           file_md5sum:
             type: string
-          object_id:
+          object_id:  # this is the object_id obtained from ICGC service using bundle_id and file_name as input
             type: string
 
   output: null  # we may not need this, does the workflow as a whole need some sort of output? or output from individual tasks is just fine
@@ -70,6 +76,16 @@ workflow:
         metadata_path: metadata_path
       depends_on: null
 
+    xml_file_upload:
+      tool: upload
+      input:
+        bundle_id: bundle_id
+        object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+        file: xml_file@prepare_metadata_xml
+        file_name: xml_file_name@prepare_metadata_xml
+        file_size: xml_file_size@prepare_metadata_xml
+        file_md5sum: xml_file_md5sum@prepare_metadata_xml
+
     parallel_download:
       scatter:
         input:
@@ -87,7 +103,6 @@ workflow:
           tool: md5sum_check
           input:
             file: file@download
-            file_size: ega_file.file_size
             file_md5sum: ega_file.file_md5sum
           depends_on:  # optional, this could be figured out from input params
           - completed@download@same_host  # state@parent_tool@
@@ -98,6 +113,13 @@ workflow:
             file_name: ega_file.file_name
           depends_on: 
           - completed@md5sum_check_data
+        md5sum_check_decrypt:
+          tool: md5sum_check
+          input:
+            file: file@decryption
+            file_md5sum: ega_file.file_md5sum
+          depends_on:  # optional, this could be figured out from input params
+          - completed@download@same_host  # state@parent_tool@
         generate_bai:
           tool: generate_bai  # optional, if omitted tool name will be the same as task name
           input:
@@ -109,39 +131,42 @@ workflow:
           tool: upload
           input:
             bundle_id: bundle_id
-            data_file: file@decryption
-            bai_file: file@generate_bai # optional
+            object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+            file: file@decryption
+            file_name: file_name@decryption
+            file_size: file_size@decryption
+            file_md5sum: file_md5sum@decryption
+
+            idx_object_id: bai_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+            idx_file: file@generate_bai
+            idx_file_name: file_name@generate_bai
+            idx_file_size: file_size@generate_bai
+            idx_file_md5sum: file_md5sum@generate_bai
+
           depends_on:
           - completed@decryption
           - completed@generate_bai
 
 
-    xml_file_upload:
-      tool: upload
-      input:
-        bundle_id: bundle_id
-        bai_file: bai_file@generate_bai
-        xml_file: xml_file@prepare_metadata_xml
-        xml_file_name: xml_file_name@prepare_metadata_xml
-        xml_file_size: xml_file_size@prepare_metadata_xml
-        xml_file_md5sum: xml_file_md5sum@prepare_metadata_xml
-
-
 # A workflow is made up with one or more tools
-# Each tool can have its own docker imagine if desirablebbvv
+# Each tool can have its own docker imagine if desirable
 tools:
   prepare_metadata_xml:
     command: prepare_metadata_xml.py
     input:
+      ega_metadata_git_repo:
+        type: string
+      ega_metadata_path:
+        type: string
+      ega_metadata_file_name:
+        type: string
       project_code:
         type: string
       dataset_id:
         type: string
-      submitter_sample_id:
+      ega_sample_id:
         type: string
-      metadata_git_repo:
-        type: string
-      metadata_path:
+      bundle_id:
         type: string
     output:
       xml_file:
@@ -192,10 +217,17 @@ tools:
         type: integer
       file_md5sum:
         type: string
+    output:
+      file_size:
+        type: integer
 
   decryption:
     command: decryption.py
     input:
+      file:
+        type: string
+        is_file: true
+    output:
       file:
         type: string
         is_file: true
