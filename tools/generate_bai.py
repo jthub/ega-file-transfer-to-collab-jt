@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import json
 import time
@@ -18,7 +19,10 @@ time.sleep(randint(1,10))
 
 task_stop = int(time.time())
 
+cwd = os.getcwd()
+
 output_json = {
+    'bai_file': os.path.join(cwd, 'bai_file.xml'),
     'runtime': {
         'task_start': task_start,
         'task_stop': task_stop

@@ -9,7 +9,7 @@ workflow:
     docker: null
 
   execution:
-    constraint: same_host  # other values: 'shared_fs', 'same_worker'
+    constraint: same_host  # other values: 'shared_fs' (not supported yet), 'same_worker'
     memory: 4g
     cpu: 2
 
@@ -120,6 +120,7 @@ workflow:
       tool: upload
       input:
         bundle_id: bundle_id
+        bai_file: bai_file@generate_bai
         xml_file: xml_file@prepare_metadata_xml
         xml_file_name: xml_file_name@prepare_metadata_xml
         xml_file_size: xml_file_size@prepare_metadata_xml

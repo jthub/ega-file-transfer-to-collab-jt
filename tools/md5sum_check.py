@@ -28,5 +28,5 @@ output_json = {
 save_output_json(output_json)
 
 # error out with certain rate for testing
-if randint(1,10) > 6:
-    sys.exit(1)
+#if randint(1,10) > 6:
+#    sys.exit(1)
