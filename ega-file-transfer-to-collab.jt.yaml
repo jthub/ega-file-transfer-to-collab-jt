@@ -3,15 +3,15 @@
 workflow:
   name:  ega-file-transfer-to-collab
   version: "0.2.0"
-  source_code: "https://github.com/junjun-zhang/ega-file-transfer-to-collab"
+  source_code: "https://github.com/icgc-dcc/ega-file-transfer-to-collab-jt"
 
   runtime:
-    docker: "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+    docker: null
 
   execution:
     constraint: same_host  # other values: 'shared_fs', 'same_worker'
-    memory: 2g
-    cpu: 1
+    memory: 4g
+    cpu: 2
 
   input:
     project_code:
@@ -120,13 +120,10 @@ workflow:
       tool: upload
       input:
         bundle_id: bundle_id
-        ega_files.file: file@download
         xml_file: xml_file@prepare_metadata_xml
         xml_file_name: xml_file_name@prepare_metadata_xml
         xml_file_size: xml_file_size@prepare_metadata_xml
         xml_file_md5sum: xml_file_md5sum@prepare_metadata_xml
-      depends_on:
-      - completed@prepare_metadata_xml
 
 
 # A workflow is made up with one or more tools
