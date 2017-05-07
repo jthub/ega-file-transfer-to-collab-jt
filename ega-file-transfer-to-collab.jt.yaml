@@ -187,6 +187,8 @@ tools:
       xml_file:
         type: string
         is_file: true
+      xml_file_name:  # passing through from ega_metadata_file_name
+        type: string
       xml_file_size:
         type: integer
       xml_file_md5sum:
