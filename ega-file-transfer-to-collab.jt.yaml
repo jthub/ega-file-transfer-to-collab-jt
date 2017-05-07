@@ -24,10 +24,6 @@ workflow:
       type: string
     icgc_sample_id:
       type: string
-    submitter_donor_id:
-      type: string
-    submitter_specimen_id:
-      type: string
     submitter:
       type: string
     bundle_type: # experiement or analysis
