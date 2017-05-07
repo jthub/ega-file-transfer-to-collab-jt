@@ -230,12 +230,6 @@ tools:
         is_file: true
       file_md5sum:
         type: string
-    output:
-      file:  # passing through
-        type: string
-        is_file: true
-      file_md5sum:
-        type: string
 
   decryption:
     command: decryption.py
