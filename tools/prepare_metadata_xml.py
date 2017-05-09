@@ -34,7 +34,8 @@ bundle_id = task_dict.get('input').get('bundle_id')
 ega_dataset_id = task_dict.get('input').get('ega_dataset_id')
 ega_sample_id = task_dict.get('input').get('ega_sample_id')
 ega_metadata_file_name = task_dict.get('input').get('ega_metadata_file_name')
-
+ega_expriment_id = task_dict.get('input').get('ega_expriment_id')
+ega_run_id = task_dict.get('input').get('ega_run_id')
 
 # do the real work here
 task_start = int(time.time())
@@ -54,14 +55,13 @@ subprocess.call(['prepare_ega_xml_audit.py',
   '-p',project_code,
   '-o',output_file,
   '-d',ega_dataset_id,
-  '-e',experiment,
-  '-r',run,
+  '-e',ega_expriment_id,
+  '-r',ega_run_id,
   '-sa',ega_sample_id])
 
 
 # complete the task
 task_stop = int(time.time())
-
 
 
 """
