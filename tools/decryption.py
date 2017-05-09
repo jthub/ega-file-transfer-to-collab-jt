@@ -36,8 +36,7 @@ object_id = task_dict.get('input').get('object_id')
 
 task_start = int(time.time())
 
-# do the real work here
-time.sleep(randint(1,10))
+subprocess.call(['decrypt_ega_file.py','-i',input_file,'-o', file_name])
 
 
 # complete the task
