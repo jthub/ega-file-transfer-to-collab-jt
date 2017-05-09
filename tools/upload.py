@@ -6,6 +6,7 @@ import json
 import time
 from random import randint
 from utils import get_task_dict, save_output_json
+import subprocess
 
 task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
@@ -54,8 +55,8 @@ idx_file_md5sum = task_dict.get('input').get('idx_file_md5sum')
 
 task_start = int(time.time())
 
-# do the real work here
-time.sleep(randint(1,10))
+
+subprocess.call(['upload_file_to_collab.py','-i',file_,'-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
 
 
 # complete the task
