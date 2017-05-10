@@ -40,9 +40,7 @@ workflow:
       type: string
     library_strategy:
       type: string
-    ega_metadata_git_repo:
-      type: string
-    ega_metadata_path:
+    ega_metadata_repo_url:
       type: string
     ega_metadata_file_name:
       type: string
@@ -62,6 +60,10 @@ workflow:
           file_md5sum:
             type: string
           object_id:  # this is the object_id obtained from ICGC service using bundle_id and file_name as input
+            type: string
+          idx_file_name:
+            type: string
+          idx_object_id:
             type: string
 
   output: null  # we may not need this, does the workflow as a whole need some sort of output? or output from individual tasks is just fine
@@ -106,6 +108,7 @@ workflow:
         download:
           tool: download  # optional, if omitted tool name will be the same as task name
           input:
+            project_code: project_code
             ega_file_id: ega_file.ega_file_id
             file_name: ega_file.file_name
             file_size: ega_file.file_size
@@ -213,6 +216,8 @@ tools:
   download:
     command: download.py
     input:
+      project_code:
+        type: string
       ega_file_id:
         type: string
       file_name:
