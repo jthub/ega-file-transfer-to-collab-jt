@@ -36,7 +36,11 @@ project_code = task_dict.get('input').get('project_code')
 
 task_start = int(time.time())
 
-subprocess.call(['download_ega_file.py','-p',project_code,'-f', ega_file_id+".aes", '-o', file_name])
+try:
+    subprocess.call(['download_ega_file.py','-p',project_code,'-f', ega_file_id+".aes", '-o', file_name])
+except Exception, e:
+    print e
+    sys.exit(1)  # task failed
 
 
 # complete the task
