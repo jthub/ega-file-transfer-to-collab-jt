@@ -12,6 +12,8 @@ cwd = os.getcwd()
 
 """
     input:
+      project_code:
+        type: string
       ega_file_id:
         type: string
       file_name:
@@ -28,12 +30,12 @@ file_name = task_dict.get('input').get('file_name')
 file_size = task_dict.get('input').get('file_size')
 file_md5sum = task_dict.get('input').get('file_md5sum')
 object_id = task_dict.get('input').get('object_id')
+project_code = task_dict.get('input').get('project_code')
 
 
 task_start = int(time.time())
 
-# do the real work here
-time.sleep(randint(1,10))
+subprocess.call(['download_ega_file.py','-p',project_code,'-f', ega_file_id+".aes", '-o', file_name])
 
 
 # complete the task
