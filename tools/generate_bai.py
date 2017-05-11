@@ -43,10 +43,16 @@ task_stop = int(time.time())
 idx_file_name = '%s.bai' % file_name
 
 try:
-    subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/generate_bai_from_bam.py','|','python','-','-i',bam_file,'-o',idx_file_name])
+    subprocess.check_output(['generate_bai_from_bam.py','-i',bam_file,'-o',idx_file_name])
 except Exception, e:
     print e
     sys.exit(1)  # task failed
+
+# try:
+#     subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/generate_bai_from_bam.py','|','python','-','-i',bam_file,'-o',idx_file_name])
+# except Exception, e:
+#     print e
+#     sys.exit(1)  # task failed
 
 # TODO generate object_id by calling ICGC ID service
 idx_object_id = None

@@ -39,10 +39,16 @@ object_id = task_dict.get('input').get('object_id')
 task_start = int(time.time())
 
 try:
-    r = subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/decrypt_ega_file.py','|','python','-','-i',input_file,'-o', file_name])
+    r = subprocess.check_output(['decrypt_ega_file.py','-i',input_file,'-o', file_name])
 except Exception, e:
     print e
     sys.exit(1)  # task failed
+
+# try:
+#     r = subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/decrypt_ega_file.py','|','python','-','-i',input_file,'-o', file_name])
+# except Exception, e:
+#     print e
+#     sys.exit(1)  # task failed
 
 # complete the task
 

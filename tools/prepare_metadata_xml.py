@@ -42,15 +42,7 @@ ega_metadata_repo = task_dict.get('input').get('ega_metadata_repo')
 task_start = int(time.time())
 
 try:
-    # subprocess.check_output(['prepare_ega_xml_audit.py',
-    #   '-i',ega_metadata_repo,
-    #   '-p',project_code,
-    #   '-o',output_file,
-    #   '-d',ega_dataset_id,
-    #   '-e',ega_expriment_id if ega_expriment_id else '',
-    #   '-r',ega_run_id if ega_run_id else '',
-    #   '-sa',ega_sample_id if ega_sample_id else ''])
-    subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/prepare_ega_xml_audit.py','|','python','-',
+    subprocess.check_output(['prepare_ega_xml_audit.py',
       '-i',ega_metadata_repo,
       '-p',project_code,
       '-o',output_file,
@@ -58,6 +50,14 @@ try:
       '-e',ega_expriment_id if ega_expriment_id else '',
       '-r',ega_run_id if ega_run_id else '',
       '-sa',ega_sample_id if ega_sample_id else ''])
+    # subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/prepare_ega_xml_audit.py','|','python','-',
+    #   '-i',ega_metadata_repo,
+    #   '-p',project_code,
+    #   '-o',output_file,
+    #   '-d',ega_dataset_id,
+    #   '-e',ega_expriment_id if ega_expriment_id else '',
+    #   '-r',ega_run_id if ega_run_id else '',
+    #   '-sa',ega_sample_id if ega_sample_id else ''])
 except Exception, e:
     print e
     sys.exit(1)  # task failed

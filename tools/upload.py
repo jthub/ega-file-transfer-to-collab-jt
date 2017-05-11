@@ -57,23 +57,8 @@ task_start = int(time.time())
 # do the real work here
 cmd = 'upload_file_to_collab.py'
 
-# try:
-#     r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
-# except Exception, e:
-#     print e
-#     sys.exit(1)  # task failed
-
-# # index exist
-# if idx_object_id:
-#     try:
-#         r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
-#     except Exception, e:
-#         print e
-#         sys.exit(1)  # task failed  
-
-
 try:
-    r = subprocess.check_output(['curl', 'https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/upload_file_to_collab.py', '|', 'python', '-', '-i', file_, '-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
+    r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
 except Exception, e:
     print e
     sys.exit(1)  # task failed
@@ -81,10 +66,25 @@ except Exception, e:
 # index exist
 if idx_object_id:
     try:
-        r = subprocess.check_output(['curl', 'https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/upload_file_to_collab.py', '|', 'python', '-', '-i', file_, '-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
+        r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
     except Exception, e:
         print e
         sys.exit(1)  # task failed  
+
+
+# try:
+#     r = subprocess.check_output(['curl', 'https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/upload_file_to_collab.py', '|', 'python', '-', '-i', file_, '-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
+# except Exception, e:
+#     print e
+#     sys.exit(1)  # task failed
+
+# # index exist
+# if idx_object_id:
+#     try:
+#         r = subprocess.check_output(['curl', 'https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/upload_file_to_collab.py', '|', 'python', '-', '-i', file_, '-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
+#     except Exception, e:
+#         print e
+#         sys.exit(1)  # task failed  
 
 
 
