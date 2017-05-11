@@ -55,7 +55,21 @@ idx_file_md5sum = task_dict.get('input').get('idx_file_md5sum')
 task_start = int(time.time())
 
 # do the real work here
-time.sleep(randint(1,10))
+cmd = 'upload_file_to_collab.py'
+
+try:
+    r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
+except Exception, e:
+    print e
+    sys.exit(1)  # task failed
+
+# index exist
+if idx_object_id:
+    try:
+        r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
+    except Exception, e:
+        print e
+        sys.exit(1)  # task failed  
 
 
 # complete the task
