@@ -5,6 +5,7 @@ import sys
 import json
 import time
 from random import randint
+import subprocess
 from utils import get_task_dict, save_output_json
 
 task_dict = get_task_dict(sys.argv[1])
@@ -12,6 +13,8 @@ cwd = os.getcwd()
 
 """
     input:
+      project_code:
+        type: string
       ega_file_id:
         type: string
       file_name:
@@ -28,12 +31,23 @@ file_name = task_dict.get('input').get('file_name')
 file_size = task_dict.get('input').get('file_size')
 file_md5sum = task_dict.get('input').get('file_md5sum')
 object_id = task_dict.get('input').get('object_id')
+project_code = task_dict.get('input').get('project_code')
 
 
 task_start = int(time.time())
 
-# do the real work here
-time.sleep(randint(1,10))
+try:
+    r = subprocess.check_output(['download_ega_file.py','-p',project_code,'-f', ega_file_id+".aes", '-o', file_name])
+except Exception, e:
+    print e
+    with open('jt.log', 'w') as f: f.write(str(e))
+    sys.exit(1)  # task failed
+
+# try:
+#     r = subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/download_ega_file.py','|','python','-','-p',project_code,'-f', ega_file_id+".aes", '-o', file_name])
+# except Exception, e:
+#     print e
+#     sys.exit(1)  # task failed
 
 
 # complete the task

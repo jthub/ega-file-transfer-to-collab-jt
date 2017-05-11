@@ -5,7 +5,9 @@ import sys
 import json
 import time
 from random import randint
-from utils import get_task_dict, save_output_json
+from utils import get_task_dict, save_output_json, get_md5
+import subprocess
+
 
 task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
@@ -35,19 +37,28 @@ bundle_id = task_dict.get('input').get('bundle_id')
 
 task_start = int(time.time())
 
-# do the real work here
-time.sleep(randint(1,10))
-
-
 # complete the task
 
 task_stop = int(time.time())
 idx_file_name = '%s.bai' % file_name
 
+try:
+    subprocess.check_output(['generate_bai_from_bam.py','-i',bam_file,'-o',idx_file_name])
+except Exception, e:
+    print e
+    with open('jt.log', 'w') as f: f.write(str(e))
+    sys.exit(1)  # task failed
+
+# try:
+#     subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/generate_bai_from_bam.py','|','python','-','-i',bam_file,'-o',idx_file_name])
+# except Exception, e:
+#     print e
+#     sys.exit(1)  # task failed
+
 # TODO generate object_id by calling ICGC ID service
 idx_object_id = None
-idx_file_size = None
-idx_file_md5sum = None
+idx_file_size = os.path.getsize(idx_file_name)
+idx_file_md5sum = utils.get_md5(idx_file_name)
 """
     output:
       # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input

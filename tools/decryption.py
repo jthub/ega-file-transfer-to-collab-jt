@@ -5,7 +5,9 @@ import sys
 import json
 import time
 from random import randint
+import subprocess
 from utils import get_task_dict, save_output_json
+
 
 task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
@@ -36,9 +38,18 @@ object_id = task_dict.get('input').get('object_id')
 
 task_start = int(time.time())
 
-# do the real work here
-time.sleep(randint(1,10))
+try:
+    r = subprocess.check_output(['decrypt_ega_file.py','-i',input_file,'-o', file_name])
+except Exception, e:
+    print e
+    with open('jt.log', 'w') as f: f.write(str(e))
+    sys.exit(1)  # task failed
 
+# try:
+#     r = subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/decrypt_ega_file.py','|','python','-','-i',input_file,'-o', file_name])
+# except Exception, e:
+#     print e
+#     sys.exit(1)  # task failed
 
 # complete the task
 
