@@ -52,7 +52,7 @@ try:
       '-e',ega_expriment_id if ega_expriment_id else '',
       '-r',ega_run_id if ega_run_id else '',
       '-sa',ega_sample_id if ega_sample_id else '',
-      '-st', ega_study_id if ega_study_id])
+      '-st',ega_study_id if ega_study_id else ''])
     # subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/prepare_ega_xml_audit.py','|','python','-',
     #   '-i',ega_metadata_repo,
     #   '-p',project_code,
