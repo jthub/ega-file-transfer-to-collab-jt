@@ -40,7 +40,7 @@ workflow:
       type: string
     library_strategy:
       type: string
-    ega_metadata_repo_url:
+    ega_metadata_repo:
       type: string
     ega_metadata_file_name:
       type: string
@@ -75,8 +75,7 @@ workflow:
     prepare_metadata_xml:
       tool: prepare_metadata_xml
       input:
-        ega_metadata_git_repo: ega_metadata_git_repo
-        ega_metadata_path: ega_metadata_path
+        ega_metadata_repo: ega_metadata_repo
         project_code: project_code
         bundle_id: bundle_id
         ega_study_id: ega_study_id
@@ -180,9 +179,7 @@ tools:
   prepare_metadata_xml:  # make a new XML cancatenate original EGA XMLs: study, sample, analysis/(experiment and run)
     command: prepare_metadata_xml.py
     input:
-      ega_metadata_git_repo:
-        type: string
-      ega_metadata_path:
+      ega_metadata_repo:
         type: string
       project_code:
         type: string

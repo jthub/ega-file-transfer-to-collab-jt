@@ -28,8 +28,6 @@ cwd = os.getcwd()
       ega_metadata_file_name:
         type: string
 """
-ega_metadata_git_repo = task_dict.get('input').get('ega_metadata_git_repo')
-ega_metadata_path = task_dict.get('input').get('ega_metadata_path')
 project_code = task_dict.get('input').get('project_code')
 bundle_id = task_dict.get('input').get('bundle_id')
 ega_dataset_id = task_dict.get('input').get('ega_dataset_id')
@@ -37,22 +35,14 @@ ega_sample_id = task_dict.get('input').get('ega_sample_id')
 ega_metadata_file_name = task_dict.get('input').get('ega_metadata_file_name')
 ega_expriment_id = task_dict.get('input').get('ega_expriment_id')
 ega_run_id = task_dict.get('input').get('ega_run_id')
+output_file = task_dict.get('input').get('ega_metadata_file_name')
+ega_metadata_repo = task_dict.get('input').get('ega_metadata_repo')
 
 # do the real work here
 task_start = int(time.time())
 
-
-#project_code = task_dict.get('input').get('project_code')
-#dataset = task_dict.get('input').get('ega_dataset_id')
-#experiment = input_json['input']['experiment_accession']
-#run = input_json['input']['run_accession']
-#sample = input_json['input']['sample_accession']
-#study = input_json['input']['study_accession']
-output_file = task_dict.get('input').get('ega_metadata_file_name')
-metadata_repo = task_dict.get('input').get('metadata_repo_url')
-
 subprocess.call(['prepare_ega_xml_audit.py',
-  '-i',metadata_repo,
+  '-i',ega_metadata_repo,
   '-p',project_code,
   '-o',output_file,
   '-d',ega_dataset_id,
