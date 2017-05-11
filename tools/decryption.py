@@ -5,8 +5,20 @@ import sys
 import json
 import time
 from random import randint
-from utils import get_task_dict, save_output_json
 import subprocess
+
+def get_task_dict(json_string):
+    try:
+        task_dict = json.loads(json_string)
+    except:
+        return {}
+
+    return task_dict
+
+
+def save_output_json(output_dict={}):
+    with open('output.json', 'w') as f:
+        f.write(json.dumps(output_dict, indent=2))
 
 
 task_dict = get_task_dict(sys.argv[1])
