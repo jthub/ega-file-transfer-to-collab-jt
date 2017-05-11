@@ -32,8 +32,10 @@ project_code = task_dict.get('input').get('project_code')
 bundle_id = task_dict.get('input').get('bundle_id')
 ega_dataset_id = task_dict.get('input').get('ega_dataset_id')
 ega_sample_id = task_dict.get('input').get('ega_sample_id')
+ega_study_id = task_dict.get('input').get('ega_study_id')
 ega_metadata_file_name = task_dict.get('input').get('ega_metadata_file_name')
 ega_expriment_id = task_dict.get('input').get('ega_expriment_id')
+ega_analysis_id = task_dict.get('input').get('ega_analysis_id')
 ega_run_id = task_dict.get('input').get('ega_run_id', '')
 output_file = task_dict.get('input').get('ega_metadata_file_name')
 ega_metadata_repo = task_dict.get('input').get('ega_metadata_repo')
@@ -49,7 +51,8 @@ try:
       '-d',ega_dataset_id,
       '-e',ega_expriment_id if ega_expriment_id else '',
       '-r',ega_run_id if ega_run_id else '',
-      '-sa',ega_sample_id if ega_sample_id else ''])
+      '-sa',ega_sample_id if ega_sample_id else '',
+      '-st', ega_study_id if ega_study_id])
     # subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/prepare_ega_xml_audit.py','|','python','-',
     #   '-i',ega_metadata_repo,
     #   '-p',project_code,

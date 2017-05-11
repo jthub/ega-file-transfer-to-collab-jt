@@ -61,6 +61,7 @@ try:
     r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
 except Exception, e:
     print e
+    with open('jt.log', 'w') as f: f.write(e)
     sys.exit(1)  # task failed
 
 # index exist
@@ -69,6 +70,7 @@ if idx_object_id:
         r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
     except Exception, e:
         print e
+        with open('jt.log', 'w') as f: f.write(e)
         sys.exit(1)  # task failed  
 
 
