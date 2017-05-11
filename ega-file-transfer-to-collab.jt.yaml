@@ -46,7 +46,7 @@ workflow:
       type: string
     ega_metadata_object_id:  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
       type: string
-    ega_files:
+    files:
       type: array
       items:
         type: object
@@ -101,7 +101,7 @@ workflow:
       scatter:
         input:
           ega_file:
-            with_items: ega_files  # this can be from output of a previous task, eg, files@previous_task
+            with_items: files  # this can be from output of a previous task, eg, files@previous_task
             task_suffix: ega_file.ega_file_id  # Optional. IN this case, 'ega_file' will be used if omitted.
       tasks:
         download:
