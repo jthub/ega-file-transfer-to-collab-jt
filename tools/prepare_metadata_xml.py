@@ -34,22 +34,26 @@ ega_dataset_id = task_dict.get('input').get('ega_dataset_id')
 ega_sample_id = task_dict.get('input').get('ega_sample_id')
 ega_metadata_file_name = task_dict.get('input').get('ega_metadata_file_name')
 ega_expriment_id = task_dict.get('input').get('ega_expriment_id')
-ega_run_id = task_dict.get('input').get('ega_run_id')
+ega_run_id = task_dict.get('input').get('ega_run_id', '')
 output_file = task_dict.get('input').get('ega_metadata_file_name')
 ega_metadata_repo = task_dict.get('input').get('ega_metadata_repo')
 
 # do the real work here
 task_start = int(time.time())
 
-subprocess.call(['prepare_ega_xml_audit.py',
-  '-i',ega_metadata_repo,
-  '-p',project_code,
-  '-o',output_file,
-  '-d',ega_dataset_id,
-  '-e',ega_expriment_id,
-  '-r',ega_run_id,
-  '-sa',ega_sample_id])
+try:
+    subprocess.check_output(['prepare_ega_xml_audit.py',
+      '-i',ega_metadata_repo,
+      '-p',project_code,
+      '-o',output_file,
+      '-d',ega_dataset_id,
+      '-e',ega_expriment_id if ega_expriment_id else '',
+      '-r',ega_run_id if ega_run_id else '',
+      '-sa',ega_sample_id if ega_sample_id else ''])
+except Exception, e:
+    print e
 
+    sys.exit(1)  # task failed
 
 # complete the task
 task_stop = int(time.time())
