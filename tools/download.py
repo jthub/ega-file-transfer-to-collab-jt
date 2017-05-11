@@ -40,6 +40,7 @@ try:
     r = subprocess.check_output(['download_ega_file.py','-p',project_code,'-f', ega_file_id+".aes", '-o', file_name])
 except Exception, e:
     print e
+    with open('jt.log', 'w') as f: f.write(str(e))
     sys.exit(1)  # task failed
 
 # try:

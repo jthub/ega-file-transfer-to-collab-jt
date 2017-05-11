@@ -46,6 +46,7 @@ try:
     subprocess.check_output(['generate_bai_from_bam.py','-i',bam_file,'-o',idx_file_name])
 except Exception, e:
     print e
+    with open('jt.log', 'w') as f: f.write(str(e))
     sys.exit(1)  # task failed
 
 # try:
