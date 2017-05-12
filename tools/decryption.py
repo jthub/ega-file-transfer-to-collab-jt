@@ -21,8 +21,6 @@ cwd = os.getcwd()
         type: string
       file_name:  # passing through
         type: string
-      file_size:  # passing through
-        type: string
       file_md5sum:  # passing through
         type: string
       object_id:  # passing through
@@ -31,7 +29,6 @@ cwd = os.getcwd()
 input_file = task_dict.get('input').get('input_file')
 ega_file_id = task_dict.get('input').get('ega_file_id')
 file_name = task_dict.get('input').get('file_name')
-file_size = task_dict.get('input').get('file_size')
 file_md5sum = task_dict.get('input').get('file_md5sum')
 object_id = task_dict.get('input').get('object_id')
 
@@ -63,7 +60,7 @@ task_stop = int(time.time())
         type: string
       file_name:  # passing through
         type: string
-      file_size:  # passing through
+      file_size:  
         type: string
       file_md5sum:  # passing through
         type: string
@@ -75,7 +72,7 @@ output_json = {
     'file': os.path.join(cwd, file_name),
     'ega_file_id': ega_file_id,
     'file_name': file_name,
-    'file_size': file_size,
+    'file_size': os.path.getsize(file_name),
     'file_md5sum': file_md5sum,
     'object_id': object_id,
     'runtime': {

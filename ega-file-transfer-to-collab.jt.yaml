@@ -55,8 +55,6 @@ workflow:
             type: string
           file_name:
             type: string
-          file_size:  # can remove this if it's not avaiable at EGA
-            type: integer
           file_md5sum:
             type: string
           object_id:  # this is the object_id obtained from ICGC service using bundle_id and file_name as input
@@ -110,7 +108,6 @@ workflow:
             project_code: project_code
             ega_file_id: ega_file.ega_file_id
             file_name: ega_file.file_name
-            file_size: ega_file.file_size
             file_md5sum: ega_file.file_md5sum
             object_id: ega_file.object_id
           depends_on: null
@@ -128,7 +125,6 @@ workflow:
             input_file: file@download
             ega_file_id: ega_file_id@download
             file_name: file_name@download
-            file_size: file_size@download
             file_md5sum: file_md5sum@download
             object_id: object_id@download
           depends_on:
@@ -153,7 +149,7 @@ workflow:
           tool: upload
           input:
             bundle_id: bundle_id
-            object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+            object_id: object_id@decryption  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
             file: file@decryption
             file_name: file_name@decryption
             file_size: file_size@decryption
@@ -255,8 +251,6 @@ tools:
       ega_file_id:  # passing through
         type: string
       file_name:  # passing through
-        type: string
-      file_size:  # passing through
         type: string
       file_md5sum:  # passing through
         type: string

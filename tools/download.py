@@ -19,8 +19,6 @@ cwd = os.getcwd()
         type: string
       file_name:
         type: string
-      file_size:
-        type: string
       file_md5sum:
         type: string
       object_id:
@@ -28,7 +26,6 @@ cwd = os.getcwd()
 """
 ega_file_id = task_dict.get('input').get('ega_file_id')
 file_name = task_dict.get('input').get('file_name')
-file_size = task_dict.get('input').get('file_size')
 file_md5sum = task_dict.get('input').get('file_md5sum')
 object_id = task_dict.get('input').get('object_id')
 project_code = task_dict.get('input').get('project_code')
