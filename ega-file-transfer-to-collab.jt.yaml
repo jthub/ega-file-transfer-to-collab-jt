@@ -212,8 +212,6 @@ tools:
         type: string
       file_name:
         type: string
-      file_size:
-        type: string
       file_md5sum:
         type: string
       object_id:
@@ -226,8 +224,6 @@ tools:
         type: string
       file_name:  # passing through
         type: string
-      file_size:  # passing through
-        type: integer
       file_md5sum:  # passing through
         type: string
       object_id:  # passing through
