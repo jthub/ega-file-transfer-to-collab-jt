@@ -114,14 +114,14 @@ workflow:
             file_md5sum: ega_file.file_md5sum
             object_id: ega_file.object_id
           depends_on: null
-        md5sum_check_data:
-          tool: md5sum_check
-          input:
-            file: file@download
-            file_name: file_name@download
-            file_md5sum: ega_file.file_md5sum
-          depends_on:  # optional, this could be figured out from input params
-          - completed@download@same_host  # state@parent_tool@
+        # md5sum_check_data:
+        #   tool: md5sum_check
+        #   input:
+        #     file: file@download
+        #     file_name: file_name@download
+        #     file_md5sum: ega_file.file_md5sum
+        #   depends_on:  # optional, this could be figured out from input params
+        #   - completed@download@same_host  # state@parent_tool@
         decryption:
           tool: decryption  # optional, if omitted tool name will be the same as task name
           input:
@@ -132,7 +132,7 @@ workflow:
             file_md5sum: file_md5sum@download
             object_id: object_id@download
           depends_on:
-          - completed@md5sum_check_data  # depends on the success of md5sum check
+          - completed@download  # depends on the success of md5sum check
         md5sum_check_decrypt:
           tool: md5sum_check
           input:
