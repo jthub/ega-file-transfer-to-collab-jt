@@ -59,8 +59,6 @@ task_stop = int(time.time())
         type: string
       file_name:  # passing through
         type: string
-      file_size:  # passing through
-        type: integer
       file_md5sum:  # passing through
         type: string
       object_id:  # passing through
@@ -72,7 +70,6 @@ output_json = {
     'ega_file_id': ega_file_id,
     'file_name': file_name,  # we may need to deal with encrypted / unencypted file names
     'object_id': object_id,
-    'file_size': file_size,
     'file_md5sum': file_md5sum,
     'runtime': {
         'task_start': task_start,
