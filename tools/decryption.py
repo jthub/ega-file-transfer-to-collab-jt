@@ -41,7 +41,6 @@ task_start = int(time.time())
 try:
     r = subprocess.check_output(['decrypt_ega_file.py','-i',input_file,'-o', file_name])
 except Exception, e:
-    print e
     with open('jt.log', 'w') as f: f.write(str(e))
     sys.exit(1)  # task failed
 

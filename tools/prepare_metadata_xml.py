@@ -62,7 +62,6 @@ try:
     #   '-r',ega_run_id if ega_run_id else '',
     #   '-sa',ega_sample_id if ega_sample_id else ''])
 except Exception, e:
-    print e
     with open('jt.log', 'w') as f: f.write(str(e))
     sys.exit(1)  # task failed
 

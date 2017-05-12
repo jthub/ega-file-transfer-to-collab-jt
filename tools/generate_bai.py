@@ -17,24 +17,12 @@ cwd = os.getcwd()
       bam_file:
         type: string
         is_file: true
-      ega_file_id:
+      idx_object_id:
         type: string
-      file_name:
-        type: string
-      file_size:
-        type: integer
-      file_md5sum:
-        type: string
-      bundle_id:
+      idx_file_name:
         type: string
 """
 bam_file = task_dict.get('input').get('bam_file')
-# ega_file_id = task_dict.get('input').get('ega_file_id')
-# file_name = task_dict.get('input').get('file_name')
-# file_size = task_dict.get('input').get('file_size')
-# file_md5sum = task_dict.get('input').get('file_md5sum')
-# bundle_id = task_dict.get('input').get('bundle_id')
-
 idx_object_id = task_dict.get('input').get('idx_object_id')
 idx_file_name = task_dict.get('input').get('idx_file_name')
 
@@ -46,7 +34,6 @@ if idx_file_name and idx_object_id:
     try:
         subprocess.check_output(['generate_bai_from_bam.py','-i',bam_file,'-o',idx_file_name])
     except Exception, e:
-        print e
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)  # task failed
 
@@ -68,7 +55,9 @@ if idx_file_name and idx_object_id:
         'idx_file_md5sum': idx_file_md5sum
     }
 else:
-    output_json = {}
+    output_json = {
+        'task_info': 'skip the bai generation!'
+    }
 
 task_stop = int(time.time())
 

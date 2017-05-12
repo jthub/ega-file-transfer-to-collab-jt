@@ -61,7 +61,6 @@ cmd = 'upload_file_to_collab.py'
 try:
     r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
 except Exception, e:
-    print e
     with open('jt.log', 'w') as f: f.write(str(e))
     sys.exit(1)  # task failed
 
@@ -70,7 +69,6 @@ if idx_object_id:
     try:
         r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
     except Exception, e:
-        print e
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)  # task failed  
 
