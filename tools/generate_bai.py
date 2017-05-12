@@ -29,36 +29,49 @@ cwd = os.getcwd()
         type: string
 """
 bam_file = task_dict.get('input').get('bam_file')
-ega_file_id = task_dict.get('input').get('ega_file_id')
-file_name = task_dict.get('input').get('file_name')
-file_size = task_dict.get('input').get('file_size')
-file_md5sum = task_dict.get('input').get('file_md5sum')
-bundle_id = task_dict.get('input').get('bundle_id')
+# ega_file_id = task_dict.get('input').get('ega_file_id')
+# file_name = task_dict.get('input').get('file_name')
+# file_size = task_dict.get('input').get('file_size')
+# file_md5sum = task_dict.get('input').get('file_md5sum')
+# bundle_id = task_dict.get('input').get('bundle_id')
+
+idx_object_id = task_dict.get('input').get('idx_object_id')
+idx_file_name = task_dict.get('input').get('idx_file_name')
 
 task_start = int(time.time())
 
 # complete the task
+# only invoke bai generation when the job has information of index file
+if idx_file_name and idx_object_id:
+    try:
+        subprocess.check_output(['generate_bai_from_bam.py','-i',bam_file,'-o',idx_file_name])
+    except Exception, e:
+        print e
+        with open('jt.log', 'w') as f: f.write(str(e))
+        sys.exit(1)  # task failed
+
+    # try:
+    #     subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/generate_bai_from_bam.py','|','python','-','-i',bam_file,'-o',idx_file_name])
+    # except Exception, e:
+    #     print e
+    #     sys.exit(1)  # task failed
+
+    # idx_object_id was defined in the job json
+    idx_file_size = os.path.getsize(idx_file_name)
+    idx_file_md5sum = utils.get_md5(idx_file_name)
+
+    output_json = {
+        'idx_file': os.path.join(cwd, idx_file_name),
+        'idx_file_name': idx_file_name,
+        'idx_object_id': idx_object_id,
+        'idx_file_size': idx_file_size,
+        'idx_file_md5sum': idx_file_md5sum
+    }
+else:
+    output_json = {}
 
 task_stop = int(time.time())
-idx_file_name = '%s.bai' % file_name
 
-try:
-    subprocess.check_output(['generate_bai_from_bam.py','-i',bam_file,'-o',idx_file_name])
-except Exception, e:
-    print e
-    with open('jt.log', 'w') as f: f.write(str(e))
-    sys.exit(1)  # task failed
-
-# try:
-#     subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/generate_bai_from_bam.py','|','python','-','-i',bam_file,'-o',idx_file_name])
-# except Exception, e:
-#     print e
-#     sys.exit(1)  # task failed
-
-# TODO generate object_id by calling ICGC ID service
-idx_object_id = None
-idx_file_size = os.path.getsize(idx_file_name)
-idx_file_md5sum = utils.get_md5(idx_file_name)
 """
     output:
       # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
@@ -75,18 +88,11 @@ idx_file_md5sum = utils.get_md5(idx_file_name)
         type: string
 """
 
-
-output_json = {
-    'idx_file': os.path.join(cwd, idx_file_name),
-    'idx_file_name': idx_file_name,
-    'idx_object_id': idx_object_id,
-    'idx_file_size': idx_file_size,
-    'idx_file_md5sum': idx_file_md5sum,
-
+output_json.update({
     'runtime': {
         'task_start': task_start,
         'task_stop': task_stop
     }
-}
+})
 
 save_output_json(output_json)

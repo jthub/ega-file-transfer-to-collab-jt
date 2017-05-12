@@ -144,11 +144,13 @@ workflow:
           tool: generate_bai  # optional, if omitted tool name will be the same as task name
           input:
             bam_file: file@decryption
-            ega_file_id: ega_file_id@decryption
-            file_name: file_name@decryption
-            file_size: file_size@decryption
-            file_md5sum: file_md5sum@decryption
-            bundle_id: bundle_id
+            # ega_file_id: ega_file_id@decryption
+            # file_name: file_name@decryption
+            # file_size: file_size@decryption
+            # file_md5sum: file_md5sum@decryption
+            # bundle_id: bundle_id
+            idx_object_id: ega_file.idx_object_id
+            idx_file_name: ega_file.idx_file_name
           depends_on: 
           - completed@decryption
           - completed@md5sum_check_decrypt
@@ -162,11 +164,11 @@ workflow:
             file_size: file_size@decryption
             file_md5sum: file_md5sum@decryption
 
-            idx_object_id: bai_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-            idx_file: file@generate_bai
-            idx_file_name: file_name@generate_bai
-            idx_file_size: file_size@generate_bai
-            idx_file_md5sum: file_md5sum@generate_bai
+            idx_object_id: idx_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+            idx_file: idx_file@generate_bai
+            idx_file_name: idx_file_name@generate_bai
+            idx_file_size: idx_file_size@generate_bai
+            idx_file_md5sum: idx_file_md5sum@generate_bai
 
           depends_on:
           - completed@decryption
@@ -286,15 +288,19 @@ tools:
       bam_file:
         type: string
         is_file: true
-      ega_file_id:
+      # ega_file_id:
+      #   type: string
+      # file_name:
+      #   type: string
+      # file_size:
+      #   type: integer
+      # file_md5sum:
+      #   type: string
+      # bundle_id:
+      #   type: string
+      idx_object_id:
         type: string
-      file_name:
-        type: string
-      file_size:
-        type: integer
-      file_md5sum:
-        type: string
-      bundle_id:
+      idx_file_name:
         type: string
     output:
       # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
