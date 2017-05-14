@@ -45,7 +45,7 @@ if idx_file_name and idx_object_id:
 
     # idx_object_id was defined in the job json
     idx_file_size = os.path.getsize(idx_file_name)
-    idx_file_md5sum = utils.get_md5(idx_file_name)
+    idx_file_md5sum = get_md5(idx_file_name)
 
     output_json = {
         'idx_file': os.path.join(cwd, idx_file_name),
