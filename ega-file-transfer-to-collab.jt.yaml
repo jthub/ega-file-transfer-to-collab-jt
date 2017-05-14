@@ -128,7 +128,7 @@ workflow:
             file_md5sum: file_md5sum@download
             object_id: object_id@download
           depends_on:
-          - completed@download  # depends on the success of md5sum check
+          - completed@download
         md5sum_check_decrypt:
           tool: md5sum_check
           input:
@@ -136,6 +136,12 @@ workflow:
             file_md5sum: file_md5sum@decryption
           depends_on:  # optional, this could be figured out from input params
           - completed@decryption # state@parent_tool@
+        delete_encrypted_file:
+          tool: delete_file
+          input:
+            file: file@download
+          depends_on:
+          - completed@md5sum_check_decrypt  # depends on the success of md5sum check
         generate_bai:
           tool: generate_bai  # optional, if omitted tool name will be the same as task name
           input:
@@ -154,16 +160,22 @@ workflow:
             file_name: file_name@decryption
             file_size: file_size@decryption
             file_md5sum: file_md5sum@decryption
-
             idx_object_id: idx_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
             idx_file: idx_file@generate_bai
             idx_file_name: idx_file_name@generate_bai
             idx_file_size: idx_file_size@generate_bai
             idx_file_md5sum: idx_file_md5sum@generate_bai
-
           depends_on:
           - completed@decryption
           - completed@generate_bai
+        delete_data_file:
+          tool: delete_file
+          input:
+            file: file@upload
+        delete_idx_file:
+          tool: delete_file
+          input:
+            file: idx_file@upload
 
 
 # A workflow is made up with one or more tools
@@ -319,3 +331,10 @@ tools:
         type: integer
       idx_file_md5sum:
         type: string
+
+  delete_file:
+    command: delete_file.py
+    input:
+      file:
+        type: string
+        is_file: true
