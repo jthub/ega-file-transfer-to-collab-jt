@@ -27,7 +27,7 @@ if file_:
         os.remove(file_)
         task_info = 'File removed'
     except:
-        task_info = 'Error: failed to remove file'
+        task_info = "Error: failed to remove file '%s'" % file_
 else:
     task_info = 'No file to remove, task skipped'
 
