@@ -168,14 +168,6 @@ workflow:
           depends_on:
           - completed@decryption
           - completed@generate_bai
-        delete_data_file:
-          tool: delete_file
-          input:
-            file: file@upload
-        delete_idx_file:
-          tool: delete_file
-          input:
-            file: idx_file@upload
 
 
 # A workflow is made up with one or more tools
