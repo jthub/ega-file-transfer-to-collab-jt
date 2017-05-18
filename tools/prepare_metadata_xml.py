@@ -49,6 +49,7 @@ try:
       '-p',project_code,
       '-o',output_file,
       '-d',ega_dataset_id,
+      '-a',ega_analysis_id if ega_analysis_id else '',
       '-e',ega_expriment_id if ega_expriment_id else '',
       '-r',ega_run_id if ega_run_id else '',
       '-sa',ega_sample_id if ega_sample_id else '',
