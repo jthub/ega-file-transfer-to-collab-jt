@@ -80,7 +80,7 @@ workflow:
         ega_dataset_id: ega_dataset_id
         ega_sample_id: ega_sample_id
         ega_analysis_id: ega_analysis_id
-        ega_expriment_id: ega_expriment_id
+        ega_experiment_id: ega_experiment_id
         ega_run_id: ega_run_id
         ega_metadata_file_name: ega_metadata_file_name
       depends_on: null
