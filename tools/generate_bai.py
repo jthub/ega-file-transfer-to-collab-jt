@@ -37,12 +37,6 @@ if idx_file_name and idx_object_id:
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)  # task failed
 
-    # try:
-    #     subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/generate_bai_from_bam.py','|','python','-','-i',bam_file,'-o',idx_file_name])
-    # except Exception, e:
-    #     print e
-    #     sys.exit(1)  # task failed
-
     # idx_object_id was defined in the job json
     idx_file_size = os.path.getsize(idx_file_name)
     idx_file_md5sum = get_md5(idx_file_name)
@@ -58,6 +52,9 @@ else:
     output_json = {
         'task_info': 'skip the bai generation!'
     }
+
+# randomly sleep to decrease the git confliction
+time.sleep(randint(10,30))
 
 task_stop = int(time.time())
 

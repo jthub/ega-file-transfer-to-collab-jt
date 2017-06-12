@@ -41,14 +41,10 @@ except Exception, e:
     with open('jt.log', 'w') as f: f.write(str(e))
     sys.exit(1)  # task failed
 
-# try:
-#     r = subprocess.check_output(['curl','https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/decrypt_ega_file.py','|','python','-','-i',input_file,'-o', file_name])
-# except Exception, e:
-#     print e
-#     sys.exit(1)  # task failed
 
 # complete the task
-
+# randomly sleep to decrease the git confliction
+time.sleep(randint(10,30))
 task_stop = int(time.time())
 
 """
