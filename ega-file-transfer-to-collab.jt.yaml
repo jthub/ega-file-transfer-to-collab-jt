@@ -164,10 +164,10 @@ workflow:
         upload_to_aws:
           tools: upload-to-aws
           input:
-            file:
-            file_name:
-            file_md5sum:
-            object_id:
+            file: file@download
+            file_name: ega_file.file_name
+            file_md5sum: file_md5sum@download
+            object_id: object_id@download
           depends_on:
           - completed@decryption
         upload:
