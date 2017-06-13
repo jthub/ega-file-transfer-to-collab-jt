@@ -162,7 +162,7 @@ workflow:
           - completed@decryption
           - completed@md5sum_check_decrypt
         upload_to_aws:
-          tools: upload-to-aws
+          tools: upload_to_aws
           input:
             file: file@download
             file_name: ega_file.file_name
