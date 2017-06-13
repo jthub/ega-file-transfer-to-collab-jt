@@ -2,7 +2,7 @@
 
 workflow:
   name:  ega-file-transfer-to-collab
-  version: "0.5.3"
+  version: "0.5.2"
   source_code: "https://github.com/icgc-dcc/ega-file-transfer-to-collab-jt"
 
   runtime:
@@ -95,6 +95,16 @@ workflow:
         file_size: xml_file_size@prepare_metadata_xml
         file_md5sum: xml_file_md5sum@prepare_metadata_xml
 
+    xml_upload_to_aws:
+      tools: upload-to-aws
+      input:
+        file:
+        file_name:
+        file_md5sum:
+        object_id:
+      depends_on:
+      - completed@prepare_metadata_xml
+
     parallel_download:
       scatter:
         input:
@@ -148,9 +158,18 @@ workflow:
             bam_file: file@decryption
             idx_object_id: ega_file.idx_object_id
             idx_file_name: ega_file.idx_file_name
-          depends_on: 
+          depends_on:
           - completed@decryption
           - completed@md5sum_check_decrypt
+        upload_to_aws:
+          tools: upload-to-aws
+          input:
+            file:
+            file_name:
+            file_md5sum:
+            object_id:
+          depends_on:
+          - completed@decryption
         upload:
           tool: upload
           input:
@@ -322,6 +341,36 @@ tools:
       idx_file_size:
         type: integer
       idx_file_md5sum:
+        type: string
+
+  upload_to_aws:
+    command: upload-to-aws.py
+    input:
+      file:
+        type: string
+      file_name:
+        type: string
+      file_md5sum:
+        type: string
+      object_id:
+        type: string
+      # the follow params are optional
+      idx_object_id:
+        type: string
+      idx_file:
+        type: string
+        is_file: true
+      idx_file_name:
+        type: string
+      idx_file_size:
+        type: integer
+      idx_file_md5sum:
+        type: string
+    output:
+      file:
+        type: string
+        is_file: true
+      file_md5sum:
         type: string
 
   delete_file:
