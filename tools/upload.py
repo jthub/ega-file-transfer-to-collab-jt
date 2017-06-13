@@ -73,24 +73,9 @@ if idx_object_id:
         sys.exit(1)  # task failed  
 
 
-# try:
-#     r = subprocess.check_output(['curl', 'https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/upload_file_to_collab.py', '|', 'python', '-', '-i', file_, '-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
-# except Exception, e:
-#     print e
-#     sys.exit(1)  # task failed
-
-# # index exist
-# if idx_object_id:
-#     try:
-#         r = subprocess.check_output(['curl', 'https://raw.githubusercontent.com/jt-hub/ega-collab-transfer-tools/master/upload_file_to_collab.py', '|', 'python', '-', '-i', file_, '-g', bundle_id, '-id', object_id, '-md5', file_md5sum])
-#     except Exception, e:
-#         print e
-#         sys.exit(1)  # task failed  
-
-
-
 # complete the task
-
+# randomly sleep to decrease the git confliction
+time.sleep(randint(10,30))
 task_stop = int(time.time())
 
 output_json = {
