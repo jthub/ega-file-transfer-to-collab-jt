@@ -353,7 +353,7 @@ tools:
         type: string
 
   upload_to_aws:
-    command: upload.py
+    command: upload_to_aws.py
     input:
       file:
         type: string
