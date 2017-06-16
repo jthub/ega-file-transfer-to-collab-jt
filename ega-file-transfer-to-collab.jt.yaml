@@ -178,7 +178,7 @@ workflow:
             idx_object_id: idx_object_id@generate_bai
             idx_file_md5sum: idx_file_md5sum@generate_bai
           depends_on:
-          - completed@decryption
+          - completed@generate_bai
         upload:
           tool: upload
           input:
