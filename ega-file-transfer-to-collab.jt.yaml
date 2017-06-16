@@ -170,6 +170,11 @@ workflow:
             file_name: ega_file.file_name
             file_md5sum: file_md5sum@download
             object_id: object_id@download
+
+            idx_file: idx_file@generate_bai
+            idx_file_name: idx_file_name@generate_bai
+            idx_object_id: idx_object_id@generate_bai
+            idx_file_md5sum: idx_file_md5sum@generate_bai
           depends_on:
           - completed@decryption
         upload:
