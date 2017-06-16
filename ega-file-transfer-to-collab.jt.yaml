@@ -88,10 +88,12 @@ workflow:
     xml_upload_to_aws:
       tools: upload_to_aws
       input:
-        file:
-        file_name:
-        file_md5sum:
-        object_id:
+        bundle_id: bundle_id
+        object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+        file: xml_file@prepare_metadata_xml
+        file_name: ega_metadata_file_name
+        file_size: xml_file_size@prepare_metadata_xml
+        file_md5sum: xml_file_md5sum@prepare_metadata_xml
       depends_on:
       - completed@prepare_metadata_xml
 
