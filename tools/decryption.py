@@ -43,8 +43,6 @@ except Exception, e:
 
 
 # complete the task
-# randomly sleep to decrease the git confliction
-time.sleep(randint(10,30))
 task_stop = int(time.time())
 
 """

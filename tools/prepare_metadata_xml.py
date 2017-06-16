@@ -60,8 +60,6 @@ except Exception, e:
     sys.exit(1)  # task failed
 
 # complete the task
-# randomly sleep to decrease the git confliction
-time.sleep(randint(10,30))
 task_stop = int(time.time())
 
 
