@@ -2,7 +2,7 @@
 
 workflow:
   name:  ega-file-transfer-to-collab
-  version: "0.5.3"
+  version: "0.6.0"
   source_code: "https://github.com/icgc-dcc/ega-file-transfer-to-collab-jt"
 
   runtime:
@@ -85,6 +85,18 @@ workflow:
         ega_metadata_file_name: ega_metadata_file_name
       depends_on: null
 
+    xml_upload_to_aws:
+      tools: upload_to_aws
+      input:
+        bundle_id: bundle_id
+        object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+        file: xml_file@prepare_metadata_xml
+        file_name: ega_metadata_file_name
+        file_size: xml_file_size@prepare_metadata_xml
+        file_md5sum: xml_file_md5sum@prepare_metadata_xml
+      depends_on:
+      - completed@prepare_metadata_xml
+
     xml_file_upload:
       tool: upload
       input:
@@ -94,6 +106,8 @@ workflow:
         file_name: ega_metadata_file_name
         file_size: xml_file_size@prepare_metadata_xml
         file_md5sum: xml_file_md5sum@prepare_metadata_xml
+
+
 
     parallel_download:
       scatter:
@@ -148,9 +162,23 @@ workflow:
             bam_file: file@decryption
             idx_object_id: ega_file.idx_object_id
             idx_file_name: ega_file.idx_file_name
-          depends_on: 
+          depends_on:
           - completed@decryption
           - completed@md5sum_check_decrypt
+        upload_to_aws:
+          tools: upload_to_aws
+          input:
+            file: file@decryption
+            file_name: ega_file.file_name
+            file_md5sum: file_md5sum@download
+            object_id: object_id@download
+
+            idx_file: idx_file@generate_bai
+            idx_file_name: idx_file_name@generate_bai
+            idx_object_id: idx_object_id@generate_bai
+            idx_file_md5sum: idx_file_md5sum@generate_bai
+          depends_on:
+          - completed@generate_bai
         upload:
           tool: upload
           input:
@@ -322,6 +350,36 @@ tools:
       idx_file_size:
         type: integer
       idx_file_md5sum:
+        type: string
+
+  upload_to_aws:
+    command: upload.py
+    input:
+      file:
+        type: string
+      file_name:
+        type: string
+      file_md5sum:
+        type: string
+      object_id:
+        type: string
+      # the follow params are optional
+      idx_object_id:
+        type: string
+      idx_file:
+        type: string
+        is_file: true
+      idx_file_name:
+        type: string
+      idx_file_size:
+        type: integer
+      idx_file_md5sum:
+        type: string
+    output:
+      file:
+        type: string
+        is_file: true
+      file_md5sum:
         type: string
 
   delete_file:
