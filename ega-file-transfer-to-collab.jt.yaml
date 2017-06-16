@@ -2,7 +2,7 @@
 
 workflow:
   name:  ega-file-transfer-to-collab
-  version: "0.6.2"
+  version: "0.6.3"
   source_code: "https://github.com/icgc-dcc/ega-file-transfer-to-collab-jt"
 
   runtime:
@@ -106,7 +106,8 @@ workflow:
         file_name: ega_metadata_file_name
         file_size: xml_file_size@prepare_metadata_xml
         file_md5sum: xml_file_md5sum@prepare_metadata_xml
-
+      depends_on:
+      - completed@xml_upload_to_aws
 
 
     parallel_download:
@@ -196,6 +197,7 @@ workflow:
           depends_on:
           - completed@decryption
           - completed@generate_bai
+          - completed@upload_to_aws
 
 
 # A workflow is made up with one or more tools
