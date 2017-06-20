@@ -38,7 +38,7 @@ if project_code in allowed_codes:
     file_size = int(os.path.getsize(file_))
 
     if idx_object_id:
-        file_size+= + int(os.path.getsize(idx_file_))
+        file_size+= int(os.path.getsize(idx_file_))
         try:
             print subprocess.check_output(['icgc-storage-client','upload','--file', idx_file_, '--object-id', idx_object_id, '--md5', idx_file_md5sum, '--force'])
         except Exception, e:
