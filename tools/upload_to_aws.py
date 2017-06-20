@@ -26,9 +26,11 @@ project_code = task_dict.get('input').get('project_code')
 
 task_start = int(time.time())
 file_size = 0
+run = False
 
 if project_code in allowed_codes:
-
+    run = True
+    
     if file_md5sum is None:
         file_md5sum = str(get_md5(file_))
 
@@ -57,7 +59,7 @@ task_stop = int(time.time())
 
 output_json = {
     'file': file_,
-    'allowed_upload': project_code in allowed_codes,
+    'allowed_upload': run,
     'file_md5sum': file_md5sum,
     'idx_file': idx_file_,
     'idx_file_md5sum': idx_file_md5sum,
