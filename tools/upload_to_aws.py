@@ -28,18 +28,13 @@ task_start = int(time.time())
 file_size = 0
 
 if project_code in allowed_codes:
+
     if file_md5sum is None:
         file_md5sum = str(get_md5(file_))
-
-
-    if idx_file_ and idx_file_md5sum is None:
-        idx_file_md5sum = str(get_md5(idx_file_))if file_md5sum is None:
-            file_md5sum = str(get_md5(file_))
 
     if idx_file_ and idx_file_md5sum is None:
         idx_file_md5sum = str(get_md5(idx_file_))
 
-    task_info= 'Project code %s is allowed. Starting Upload.' % project_code
     file_size = int(os.path.getsize(file_))
 
     if idx_object_id:
@@ -55,10 +50,6 @@ if project_code in allowed_codes:
     except Exception, e:
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)
-else:
-    task_info= "**********************************************************"
-    task_info= "Project code %s is not allowed!!! Skipping Upload!!!" % project_code
-    task_info= "**********************************************************"
 
 
 task_stop = int(time.time())
@@ -66,7 +57,7 @@ task_stop = int(time.time())
 
 output_json = {
     'file': file_,
-    'allowed_upload': project_code in allowed_codes
+    'allowed_upload': project_code in allowed_codes,
     'file_md5sum': file_md5sum,
     'idx_file': idx_file_,
     'idx_file_md5sum': idx_file_md5sum,
