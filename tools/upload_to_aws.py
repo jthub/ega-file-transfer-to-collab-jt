@@ -26,10 +26,9 @@ project_code = task_dict.get('input').get('project_code')
 
 task_start = int(time.time())
 file_size = 0
-run = False
+run = project_code in allowed_codes
 
-if project_code in allowed_codes:
-    run = True
+if run: 
 
     if file_md5sum is None:
         file_md5sum = str(get_md5(file_))
