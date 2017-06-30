@@ -49,6 +49,7 @@ if project_code in allowed_codes:
 
     try:
         print subprocess.check_output(['icgc-storage-client','upload','--file', file_, '--object-id', object_id, '--md5', file_md5sum, '--force'])
+        print subprocess.check_output(['aws', 's3', 'cp', cwd+ '/' + file_, 's3://oicr.icgc.meta/metadata/'+ file_)
     except Exception, e:
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)
