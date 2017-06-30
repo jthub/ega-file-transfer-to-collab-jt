@@ -26,6 +26,7 @@ project_code = task_dict.get('input').get('project_code')
 
 task_start = int(time.time())
 file_size = 0
+idx_file_size = 0
 run = project_code in allowed_codes
 
 if run: 
