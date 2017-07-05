@@ -59,6 +59,8 @@ task_start = int(time.time())
 cmd = 'upload_file_to_collab.py'
 
 try:
+    if file_.endswith('.xml'):
+        print subprocess.check_output(['aws', '--profile', 'collab', '--endpoint-url', 'https://object.cancercollaboratory.org:9080', 's3', 'cp', file_, os.path.join('s3://oicr.icgc.meta/metadata/', object_id)])
     r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
 except Exception, e:
     with open('jt.log', 'w') as f: f.write(str(e))
@@ -70,7 +72,7 @@ if idx_object_id:
         r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
     except Exception, e:
         with open('jt.log', 'w') as f: f.write(str(e))
-        sys.exit(1)  # task failed  
+        sys.exit(1)  # task failed
 
 
 # complete the task
@@ -84,4 +86,3 @@ output_json = {
 }
 
 save_output_json(output_json)
-
