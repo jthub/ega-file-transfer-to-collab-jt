@@ -48,7 +48,7 @@ if project_code in allowed_codes:
             sys.exit(1)  # task failed
 
     try:
-        print subprocess.check_output(['icgc-storage-client','upload','--file', file_, '--object-id', object_id, '--md5', file_md5sum, '--force'])
+        print subprocess.check_output(['icgc-storage-client', '--profile', 'aws', 'upload','--file', file_, '--object-id', object_id, '--md5', file_md5sum, '--force'])
 
         #metadata step
         if file_.endswith('.xml'):
