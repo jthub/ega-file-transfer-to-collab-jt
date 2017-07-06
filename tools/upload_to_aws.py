@@ -42,13 +42,18 @@ if run:
     if idx_object_id:
         idx_file_size = int(os.path.getsize(idx_file_))
         try:
-            print subprocess.check_output(['icgc-storage-client','upload','--file', idx_file_, '--object-id', idx_object_id, '--md5', idx_file_md5sum, '--force'])
+            print subprocess.check_output(['icgc-storage-client', '--profile', 'aws', 'upload', '--file', idx_file_, '--object-id', idx_object_id, '--md5', idx_file_md5sum, '--force'])
         except Exception, e:
             with open('jt.log', 'w') as f: f.write(str(e))
             sys.exit(1)  # task failed
 
     try:
-        print subprocess.check_output(['icgc-storage-client','upload','--file', file_, '--object-id', object_id, '--md5', file_md5sum, '--force'])
+        print subprocess.check_output(['icgc-storage-client', '--profile', 'aws', 'upload','--file', file_, '--object-id', object_id, '--md5', file_md5sum, '--force'])
+
+        #metadata step
+        if file_.endswith('.xml'):
+            print subprocess.check_output(['aws', '--profile', 'amazon', 's3', 'cp', file_, os.path.join('s3://oicr.icgc.meta/metadata/', object_id)])
+
     except Exception, e:
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)
