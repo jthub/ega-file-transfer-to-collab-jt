@@ -212,6 +212,7 @@ workflow:
           input:
             object_id: ega_file.object_id
             file_name: ega_file.file_name
+            project_code: project_code
           depends_on:
           - completed@upload_to_aws
 
@@ -419,6 +420,8 @@ tools:
       object_id:
         type: string
       file_name:
+        type: string
+      project_code:
         type: string
 
   delete_file:
