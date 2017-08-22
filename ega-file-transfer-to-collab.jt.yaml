@@ -200,6 +200,21 @@ workflow:
           - completed@decryption
           - completed@generate_bai
           - completed@upload_to_aws
+        qc_from_collab:
+          tool: qc_from_collab
+          input:
+            object_id: ega_file.object_id
+            file_name: ega_file.file_name
+          depends_on:
+          - completed@upload
+        qc_from_aws:
+          tool: qc_from_aws
+          input:
+            object_id: ega_file.object_id
+            file_name: ega_file.file_name
+          depends_on:
+          - completed@upload_to_aws
+
 
 
 # A workflow is made up with one or more tools
@@ -390,9 +405,26 @@ tools:
       allowed_upload:
         type: boolean
 
+  qc_from_collab:
+    command: qc_from_collab.py
+    input:
+      object_id:
+        type: string
+      file_name:
+        type: string
+
+  qc_from_aws:
+    command: qc_from_aws.py
+    input:
+      object_id:
+        type: string
+      file_name:
+        type: string
+
   delete_file:
     command: delete_file.py
     input:
       file:
         type: string
         is_file: true
+
