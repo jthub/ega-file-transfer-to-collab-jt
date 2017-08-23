@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 
-from utils import get_task_dict, save_output_json
 import subprocess
 import os
 import sys
 import time
+from utils import get_task_dict, save_output_json
 
 task_dict = get_task_dict(sys.argv[1])
 
