@@ -47,5 +47,5 @@ output_json = {
 
 save_output_json(output_json)
 
-if task_info == '':
+if task_info != '':
     sys.exit(1)
