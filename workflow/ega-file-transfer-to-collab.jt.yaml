@@ -106,66 +106,66 @@ workflow:
         out_dir: out_dir@download
       depends_on:
       - completed@download
-    xml_upload_to_aws:
-      tool: upload_to_aws
-      input:
-        bundle_id: bundle_id
-        object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-        file: xml_file@prepare_metadata_xml
-        file_name: ega_metadata_file_name
-        file_size: xml_file_size@prepare_metadata_xml
-        file_md5sum: xml_file_md5sum@prepare_metadata_xml
-        project_code: project_code
-      depends_on:
-      - completed@prepare_metadata_xml
-    upload_to_aws:
-      tool: upload_to_aws
-      input:
-        file: file@decryption
-        file_name: ega_file.file_name
-        file_md5sum: file_md5sum@download
-        object_id: object_id@download
-        project_code: project_code
+    #xml_upload_to_aws:
+    #  tool: upload_to_aws
+    #  input:
+    #    bundle_id: bundle_id
+    #    object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+    #    file: xml_file@prepare_metadata_xml
+    #    file_name: ega_metadata_file_name
+    #    file_size: xml_file_size@prepare_metadata_xml
+    #    file_md5sum: xml_file_md5sum@prepare_metadata_xml
+    #    project_code: project_code
+    #  depends_on:
+    #  - completed@prepare_metadata_xml
+    #upload_to_aws:
+    #  tool: upload_to_aws
+    #  input:
+    #    file: file@decryption
+    #    file_name: ega_file.file_name
+    #    file_md5sum: file_md5sum@download
+    #    object_id: object_id@download
+    #    project_code: project_code
 
-        idx_file: idx_file@generate_bai
-        idx_file_name: idx_file_name@generate_bai
-        idx_object_id: idx_object_id@generate_bai
-        idx_file_md5sum: idx_file_md5sum@generate_bai
-      depends_on:
-      - completed@generate_bai
-    upload:
-      tool: upload
-      input:
-        bundle_id: bundle_id
-        object_id: object_id@decryption  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-        file: file@decryption
-        file_name: file_name@decryption
-        file_size: file_size@decryption
-        file_md5sum: file_md5sum@decryption
-        idx_object_id: idx_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-        idx_file: idx_file@generate_bai
-        idx_file_name: idx_file_name@generate_bai
-        idx_file_size: idx_file_size@generate_bai
-        idx_file_md5sum: idx_file_md5sum@generate_bai
-      depends_on:
-      - completed@decryption
-      - completed@generate_bai
-      - completed@upload_to_aws
-    qc_from_collab:
-      tool: qc_from_collab
-      input:
-        object_id: ega_file.object_id
-        file_name: ega_file.file_name
-      depends_on:
-      - completed@upload
-    qc_from_aws:
-      tool: qc_from_aws
-      input:
-        object_id: ega_file.object_id
-        file_name: ega_file.file_name
-        project_code: project_code
-      depends_on:
-      - completed@upload_to_aws
+    #    idx_file: idx_file@generate_bai
+    #    idx_file_name: idx_file_name@generate_bai
+    #    idx_object_id: idx_object_id@generate_bai
+    #    idx_file_md5sum: idx_file_md5sum@generate_bai
+    #  depends_on:
+    #  - completed@generate_bai
+    #upload:
+    #  tool: upload
+    #  input:
+    #    bundle_id: bundle_id
+    #    object_id: object_id@decryption  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+    #    file: file@decryption
+    #    file_name: file_name@decryption
+    #    file_size: file_size@decryption
+    #    file_md5sum: file_md5sum@decryption
+    #    idx_object_id: idx_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+    #    idx_file: idx_file@generate_bai
+    #    idx_file_name: idx_file_name@generate_bai
+    #    idx_file_size: idx_file_size@generate_bai
+    #    idx_file_md5sum: idx_file_md5sum@generate_bai
+    #  depends_on:
+    #  - completed@decryption
+    #  - completed@generate_bai
+    #  - completed@upload_to_aws
+    #qc_from_collab:
+    #  tool: qc_from_collab
+    #  input:
+    #    object_id: ega_file.object_id
+    #    file_name: ega_file.file_name
+    #  depends_on:
+    #  - completed@upload
+    #qc_from_aws:
+    #  tool: qc_from_aws
+    #  input:
+    #    object_id: ega_file.object_id
+    #    file_name: ega_file.file_name
+    #    project_code: project_code
+    #  depends_on:
+    #  - completed@upload_to_aws
 
 
 
