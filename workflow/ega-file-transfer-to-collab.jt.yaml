@@ -105,7 +105,7 @@ workflow:
         ega_metadata_file_name: ega_metadata_file_name
         out_dir: out_dir@download
       depends_on:
-      - completed@download
+      - completed@generate_bai
     #xml_upload_to_aws:
     #  tool: upload_to_aws
     #  input:
