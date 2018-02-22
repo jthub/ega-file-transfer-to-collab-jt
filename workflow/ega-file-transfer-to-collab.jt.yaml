@@ -103,42 +103,21 @@ workflow:
       input:
         project_code: project_code
         files: files
-        ega_file_id: ega_file.ega_file_id
-        file_name: ega_file.file_name
-        file_md5sum: ega_file.file_md5sum
       depends_on: null
     decryption:
       tool: decryption  # optional, if omitted tool name will be the same as task name
       input:
-        input_file: file@download
-        ega_file_id: ega_file_id@download
-        file_name: file_name@download
-        file_md5sum: file_md5sum@download
-        object_id: object_id@download
+        input_dir: out_dir@download
+        files: files
       depends_on:
       - completed@download
-    md5sum_check_decrypt:
-      tool: md5sum_check
-      input:
-        file: file@decryption
-        file_md5sum: file_md5sum@decryption
-      depends_on:  # optional, this could be figured out from input params
-      - completed@decryption # state@parent_tool@
-    delete_encrypted_file:
-      tool: delete_file
-      input:
-        file: file@download
-      depends_on:
-      - completed@md5sum_check_decrypt  # depends on the success of md5sum check
     generate_bai:
       tool: generate_bai  # optional, if omitted tool name will be the same as task name
       input:
-        bam_file: file@decryption
-        idx_object_id: ega_file.idx_object_id
-        idx_file_name: ega_file.idx_file_name
+        input_dir: out_dir@download
+        files: files
       depends_on:
       - completed@decryption
-      - completed@md5sum_check_decrypt
     upload_to_aws:
       tool: upload_to_aws
       input:
@@ -235,16 +214,7 @@ tools:
       files:
         type: array
     output:
-      file:  # new field
-        type: string
-        is_file: true
-      ega_file_id:  # passing through
-        type: string
-      file_name:  # passing through
-        type: string
-      file_md5sum:  # passing through
-        type: string
-      object_id:  # passing through
+      out_dir:
         type: string
 
   md5sum_check:
@@ -259,42 +229,18 @@ tools:
   decryption:
     command: decryption.py
     input:
-      input_file:
+      input_dir:
         type: string
-        is_file: true
-      ega_file_id:  # passing through
-        type: string
-      file_name:  # passing through
-        type: string
-      file_md5sum:  # passing through
-        type: string
-      object_id:  # passing through
-        type: string
-    output:
-      file:
-        type: string
-        is_file: true
-      ega_file_id:  # passing through
-        type: string
-      file_name:  # passing through
-        type: string
-      file_size:  # passing through
-        type: string
-      file_md5sum:  # passing through
-        type: string
-      object_id:  # passing through
-        type: string
+      files:
+        type: array
 
   generate_bai:
     command: generate_bai.py
     input:
-      bam_file:
+      input_dir:
         type: string
-        is_file: true
-      idx_object_id:
-        type: string
-      idx_file_name:
-        type: string
+      files:
+        type: array
     output:
       # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
       idx_object_id:

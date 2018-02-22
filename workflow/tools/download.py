@@ -12,16 +12,15 @@ task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
 
 """
+  download:
+    command: download.py
     input:
       project_code:
         type: string
-      ega_file_id:
-        type: string
-      file_name:
-        type: string
-      file_md5sum:
-        type: string
-      object_id:
+      files:
+        type: array
+    output:
+      out_dir:
         type: string
 """
 files = task_dict.get('input').get('files')
@@ -47,16 +46,7 @@ task_stop = int(time.time())
 
 """
     output:
-      file:  # new field
-        type: string
-        is_file: true
-      ega_file_id:  # passing through
-        type: string
-      file_name:  # passing through
-        type: string
-      file_md5sum:  # passing through
-        type: string
-      object_id:  # passing through
+      out_dir:
         type: string
 """
 

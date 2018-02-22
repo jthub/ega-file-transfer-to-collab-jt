@@ -6,7 +6,7 @@ import json
 import time
 from random import randint
 import subprocess
-from utils import get_task_dict, save_output_json
+from utils import get_task_dict, save_output_json, get_md5
 
 
 task_dict = get_task_dict(sys.argv[1])
@@ -14,61 +14,32 @@ cwd = os.getcwd()
 
 """
     input:
-      input_file:
+      input_dir:
         type: string
-        is_file: true
-      ega_file_id:  # passing through
-        type: string
-      file_name:  # passing through
-        type: string
-      file_md5sum:  # passing through
-        type: string
-      object_id:  # passing through
-        type: string
-"""
-input_file = task_dict.get('input').get('input_file')
-ega_file_id = task_dict.get('input').get('ega_file_id')
-file_name = task_dict.get('input').get('file_name')
-file_md5sum = task_dict.get('input').get('file_md5sum')
-object_id = task_dict.get('input').get('object_id')
+      files:
+        type: array
 
+"""
+input_dir = task_dict.get('input').get('input_dir')
+files = task_dict.get('input').get('files')
 
 task_start = int(time.time())
 
-try:
-    r = subprocess.check_output(['decrypt_ega_file.py','-i',input_file,'-o', file_name])
-except Exception, e:
-    with open('jt.log', 'w') as f: f.write(str(e))
-    sys.exit(1)  # task failed
+for _file in files:
+    try:
+        r = subprocess.check_output(['decrypt_ega_file.py','-i',os.path.join(input_dir, _file.get('file_name'))+'.aes','-o', _file.get('file_name')])
+        os.remove(os.path.join(input_dir, _file.get('file_name'))+'.aes')
+        if not get_md5(_file.get('file_name')) == _file.get('file_md5sum'):
+            sys.exit(1)
+    except Exception, e:
+        with open('jt.log', 'w') as f: f.write(str(e))
+        sys.exit(1)  # task failed
 
 
 # complete the task
 task_stop = int(time.time())
 
-"""
-    output:
-      file:
-        type: string
-        is_file: true
-      ega_file_id:  # passing through
-        type: string
-      file_name:  # passing through
-        type: string
-      file_size:  
-        type: string
-      file_md5sum:  # passing through
-        type: string
-      object_id:  # passing through
-        type: string
-"""
-
 output_json = {
-    'file': os.path.join(cwd, file_name),
-    'ega_file_id': ega_file_id,
-    'file_name': file_name,
-    'file_size': os.path.getsize(file_name),
-    'file_md5sum': file_md5sum,
-    'object_id': object_id,
     'runtime': {
         'task_start': task_start,
         'task_stop': task_stop
