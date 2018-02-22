@@ -98,123 +98,95 @@ workflow:
       depends_on:
       - completed@prepare_metadata_xml
 
-    xml_file_upload:
+    download:
+      tool: download  # optional, if omitted tool name will be the same as task name
+      input:
+        project_code: project_code
+        files: files
+        ega_file_id: ega_file.ega_file_id
+        file_name: ega_file.file_name
+        file_md5sum: ega_file.file_md5sum
+      depends_on: null
+    decryption:
+      tool: decryption  # optional, if omitted tool name will be the same as task name
+      input:
+        input_file: file@download
+        ega_file_id: ega_file_id@download
+        file_name: file_name@download
+        file_md5sum: file_md5sum@download
+        object_id: object_id@download
+      depends_on:
+      - completed@download
+    md5sum_check_decrypt:
+      tool: md5sum_check
+      input:
+        file: file@decryption
+        file_md5sum: file_md5sum@decryption
+      depends_on:  # optional, this could be figured out from input params
+      - completed@decryption # state@parent_tool@
+    delete_encrypted_file:
+      tool: delete_file
+      input:
+        file: file@download
+      depends_on:
+      - completed@md5sum_check_decrypt  # depends on the success of md5sum check
+    generate_bai:
+      tool: generate_bai  # optional, if omitted tool name will be the same as task name
+      input:
+        bam_file: file@decryption
+        idx_object_id: ega_file.idx_object_id
+        idx_file_name: ega_file.idx_file_name
+      depends_on:
+      - completed@decryption
+      - completed@md5sum_check_decrypt
+    upload_to_aws:
+      tool: upload_to_aws
+      input:
+        file: file@decryption
+        file_name: ega_file.file_name
+        file_md5sum: file_md5sum@download
+        object_id: object_id@download
+        project_code: project_code
+
+        idx_file: idx_file@generate_bai
+        idx_file_name: idx_file_name@generate_bai
+        idx_object_id: idx_object_id@generate_bai
+        idx_file_md5sum: idx_file_md5sum@generate_bai
+      depends_on:
+      - completed@generate_bai
+    upload:
       tool: upload
       input:
         bundle_id: bundle_id
-        object_id: ega_metadata_object_id  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-        file: xml_file@prepare_metadata_xml
-        file_name: ega_metadata_file_name
-        file_size: xml_file_size@prepare_metadata_xml
-        file_md5sum: xml_file_md5sum@prepare_metadata_xml
+        object_id: object_id@decryption  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+        file: file@decryption
+        file_name: file_name@decryption
+        file_size: file_size@decryption
+        file_md5sum: file_md5sum@decryption
+        idx_object_id: idx_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+        idx_file: idx_file@generate_bai
+        idx_file_name: idx_file_name@generate_bai
+        idx_file_size: idx_file_size@generate_bai
+        idx_file_md5sum: idx_file_md5sum@generate_bai
       depends_on:
-      - completed@xml_upload_to_aws
-
-
-    parallel_download:
-      scatter:
-        input:
-          ega_file:
-            with_items: files  # this can be from output of a previous task, eg, files@previous_task
-            task_suffix: ega_file.ega_file_id  # Optional. IN this case, 'ega_file' will be used if omitted.
-      tasks:
-        download:
-          tool: download  # optional, if omitted tool name will be the same as task name
-          input:
-            project_code: project_code
-            ega_file_id: ega_file.ega_file_id
-            file_name: ega_file.file_name
-            file_md5sum: ega_file.file_md5sum
-            object_id: ega_file.object_id
-          depends_on: null
-        # md5sum_check_data:
-        #   tool: md5sum_check
-        #   input:
-        #     file: file@download
-        #     file_name: file_name@download
-        #     file_md5sum: ega_file.file_md5sum
-        #   depends_on:  # optional, this could be figured out from input params
-        #   - completed@download@same_host  # state@parent_tool@
-        decryption:
-          tool: decryption  # optional, if omitted tool name will be the same as task name
-          input:
-            input_file: file@download
-            ega_file_id: ega_file_id@download
-            file_name: file_name@download
-            file_md5sum: file_md5sum@download
-            object_id: object_id@download
-          depends_on:
-          - completed@download
-        md5sum_check_decrypt:
-          tool: md5sum_check
-          input:
-            file: file@decryption
-            file_md5sum: file_md5sum@decryption
-          depends_on:  # optional, this could be figured out from input params
-          - completed@decryption # state@parent_tool@
-        delete_encrypted_file:
-          tool: delete_file
-          input:
-            file: file@download
-          depends_on:
-          - completed@md5sum_check_decrypt  # depends on the success of md5sum check
-        generate_bai:
-          tool: generate_bai  # optional, if omitted tool name will be the same as task name
-          input:
-            bam_file: file@decryption
-            idx_object_id: ega_file.idx_object_id
-            idx_file_name: ega_file.idx_file_name
-          depends_on:
-          - completed@decryption
-          - completed@md5sum_check_decrypt
-        upload_to_aws:
-          tool: upload_to_aws
-          input:
-            file: file@decryption
-            file_name: ega_file.file_name
-            file_md5sum: file_md5sum@download
-            object_id: object_id@download
-            project_code: project_code
-
-            idx_file: idx_file@generate_bai
-            idx_file_name: idx_file_name@generate_bai
-            idx_object_id: idx_object_id@generate_bai
-            idx_file_md5sum: idx_file_md5sum@generate_bai
-          depends_on:
-          - completed@generate_bai
-        upload:
-          tool: upload
-          input:
-            bundle_id: bundle_id
-            object_id: object_id@decryption  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-            file: file@decryption
-            file_name: file_name@decryption
-            file_size: file_size@decryption
-            file_md5sum: file_md5sum@decryption
-            idx_object_id: idx_object_id@generate_bai  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
-            idx_file: idx_file@generate_bai
-            idx_file_name: idx_file_name@generate_bai
-            idx_file_size: idx_file_size@generate_bai
-            idx_file_md5sum: idx_file_md5sum@generate_bai
-          depends_on:
-          - completed@decryption
-          - completed@generate_bai
-          - completed@upload_to_aws
-        qc_from_collab:
-          tool: qc_from_collab
-          input:
-            object_id: ega_file.object_id
-            file_name: ega_file.file_name
-          depends_on:
-          - completed@upload
-        qc_from_aws:
-          tool: qc_from_aws
-          input:
-            object_id: ega_file.object_id
-            file_name: ega_file.file_name
-            project_code: project_code
-          depends_on:
-          - completed@upload_to_aws
+      - completed@decryption
+      - completed@generate_bai
+      - completed@upload_to_aws
+    qc_from_collab:
+      tool: qc_from_collab
+      input:
+        object_id: ega_file.object_id
+        file_name: ega_file.file_name
+      depends_on:
+      - completed@upload
+    qc_from_aws:
+      tool: qc_from_aws
+      input:
+        object_id: ega_file.object_id
+        file_name: ega_file.file_name
+        project_code: project_code
+      depends_on:
+      - completed@upload_to_aws
 
 
 
@@ -260,14 +232,8 @@ tools:
     input:
       project_code:
         type: string
-      ega_file_id:
-        type: string
-      file_name:
-        type: string
-      file_md5sum:
-        type: string
-      object_id:
-        type: string
+      files:
+        type: array
     output:
       file:  # new field
         type: string
