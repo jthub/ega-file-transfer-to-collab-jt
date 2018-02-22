@@ -27,9 +27,11 @@ task_start = int(time.time())
 
 for _file in files:
     try:
-        r = subprocess.check_output(['decrypt_ega_file.py','-i',os.path.join(input_dir, _file.get('file_name'))+'.aes','-o', _file.get('file_name')])
-        os.remove(os.path.join(input_dir, _file.get('file_name'))+'.aes')
-        if not get_md5(_file.get('file_name')) == _file.get('file_md5sum'):
+        file_name = os.path.join(input_dir, _file.get('file_name'))
+        encrypted_file_name = os.path.join(input_dir, _file.get('file_name'))+'.aes'
+        r = subprocess.check_output(['decrypt_ega_file.py','-i',encrypted_file_name,'-o', file_name])
+        os.remove(encrypted_file_name)
+        if not get_md5(file_name) == _file.get('file_md5sum'):
             sys.exit(1)
     except Exception, e:
         with open('jt.log', 'w') as f: f.write(str(e))
