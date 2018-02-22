@@ -39,6 +39,7 @@ ega_analysis_id = task_dict.get('input').get('ega_analysis_id')
 ega_run_id = task_dict.get('input').get('ega_run_id', '')
 output_file = task_dict.get('input').get('ega_metadata_file_name')
 ega_metadata_repo = task_dict.get('input').get('ega_metadata_repo')
+out_dir = task_dict.get('input').get('out_dir')
 
 # do the real work here
 task_start = int(time.time())
@@ -47,7 +48,7 @@ try:
     subprocess.check_output(['prepare_ega_xml_audit.py',
       '-i',ega_metadata_repo,
       '-p',project_code,
-      '-o',output_file,
+      '-o',os.path.join(out_dir,output_file),
       '-d',ega_dataset_id,
       '-a',ega_analysis_id if ega_analysis_id else '',
       '-e',ega_expriment_id if ega_expriment_id else '',
@@ -62,25 +63,7 @@ except Exception, e:
 # complete the task
 task_stop = int(time.time())
 
-
-"""
-    output:
-      xml_file:
-        type: string
-        is_file: true
-      xml_file_name:  # passing through from ega_metadata_file_name
-        type: string
-      xml_file_size:
-        type: integer
-      xml_file_md5sum:
-        type: string
-"""
-
 output_json = {
-    'xml_file': os.path.join(cwd, output_file),
-    'xml_file_name': output_file,
-    'xml_file_size': os.path.getsize(output_file),
-    'xml_file_md5sum': get_md5(output_file),
     'runtime': {
         'task_start': task_start,
         'task_stop': task_stop
