@@ -304,11 +304,10 @@ tools:
     input:
       input_dir:
         type: string
-      files:
-        type: array
+      payload:
+        type: string
       study_id:
         type: string
-      file_name:
 
   upload_to_aws:
     command: upload_to_aws.py
