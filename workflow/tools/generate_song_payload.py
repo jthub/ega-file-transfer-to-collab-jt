@@ -27,7 +27,7 @@ donor_submitter_id = task_dict.get('input').get('donor_submitter_id')
 library_strategy = task_dict.get('input').get('library_strategy')
 reference_genome = task_dict.get('input').get('reference_genome')
 specimen_type = task_dict.get('input').get('specimen_type')
-specimen_submitter_id = task_dict.get('input').get('specimen_submitter_id')
+submitter_specimen_id = task_dict.get('input').get('submitter_specimen_id')
 sample_submitter_id = task_dict.get('input').get('sample_submitter_id')
 sample_type = 'DNA'
 
@@ -61,7 +61,7 @@ experiment_payload = ExperimentPayload(aligned=is_aligned(files), library_strate
 song_payload = SongPayload(analysis_id=analysis_id, analysis_type='sequencingRead', experiment_payload=experiment_payload)
 donor_payload = DonorPayload(donor_gender=donor_gender, donor_submitter_id=donor_submitter_id)
 specimen_payload = SpecimenPayload(specimen_class=get_specimen_class(specimen_type),
-                                   specimen_type=specimen_type,specimen_submitter_id=specimen_submitter_id)
+                                   specimen_type=specimen_type,specimen_submitter_id=submitter_specimen_id)
 sample_payload = SamplePayload(donor_payload=donor_payload, sample_submitter_id=sample_submitter_id, sample_type=sample_type, specimen_payload=specimen_payload)
 
 song_payload.add_sample_payload(sample_payload)
@@ -69,11 +69,20 @@ song_payload.add_info('isPcawg', False)
 
 for file in files:
     file_path = os.path.join(input_dir, file.get('file_name'))
+    idx_file = file.get('file_name')+'.bai'
+    idx_file_path = os.path.join(input_dir, idx_file)
     song_payload.add_file_payload(FilePayload(file_access='controlled',
                               file_name=file.get('file_name'),
                               md5sum = hashlib.md5(open(file_path, 'rb').read()).hexdigest(),
                               file_type=get_file_type(file.get('file_name')),
                               file_size=os.stat(file_path).st_size))
+
+    if os.path.isfile(idx_file_path):
+        song_payload.add_file_payload(FilePayload(file_access='controlled',
+                                  file_name=idx_file,
+                                  md5sum = hashlib.md5(open(idx_file_path, 'rb').read()).hexdigest(),
+                                  file_type=idx_file_path(idx_file),
+                                  file_size=os.stat(file_path).st_size))
 
 file_path = os.path.join(input_dir, metadata_file_name)
 song_payload.add_file_payload(FilePayload(file_access='controlled',

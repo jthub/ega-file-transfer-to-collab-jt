@@ -56,7 +56,7 @@ workflow:
       type: string
     submitter_sample_id:
       type: string
-    specimen_submitter_id:
+    submitter_specimen_id:
       type: string
     files:
       type: array
@@ -129,7 +129,7 @@ workflow:
         library_strategy: library_strategy
         reference_genome: reference_genome
         specimen_type: submitter_specimen_type
-        specimen_submitter_id: specimen_submitter_id
+        submitter_specimen_id: specimen_submitter_id
         sample_submitter_id: submitter_sample_id
       depends_on:
       - completed@prepare_metadata_xml
