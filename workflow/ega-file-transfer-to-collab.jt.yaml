@@ -138,7 +138,7 @@ workflow:
       tool: upload
       input:
         input_dir: out_dir@download
-        payload: payload@generate_song
+        payload: payload@generate_song_payload
         study_id: project_code
       depends_on:
       - completed@download
