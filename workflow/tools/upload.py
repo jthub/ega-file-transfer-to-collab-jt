@@ -1,90 +1,40 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
-import sys
 import json
-import time
-from random import randint
-from utils import get_task_dict, save_output_json
 import subprocess
+from utils import get_task_dict, save_output_json, get_md5
+import sys
+
+import shutil
+
+def upload_file(input_directory, study_id, payload):
+    upload_container = "quay.io/baminou/dckr_song_upload"
+    song_server = 'http://142.1.177.168:8080'
+
+    subprocess.check_output(['docker', 'pull', upload_container])
+
+    subprocess.check_output(['docker','run','-e','ACCESSTOKEN',
+                             '-v', input_directory+':/app',upload_container, 'upload','-s',study_id,
+                             '-u', song_server, '-p', '/app/'+payload,
+                             '-o','manifest.txt','-j','manifest.json',
+                             '-d', '/app/'])
+    return json.load(open(os.path.join(input_directory,'manifest.json')))
+
 
 task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
 
-"""
-    input:
-      bundle_id:
-        type: string
-      object_id:
-        type: string
-      file:
-        type: string
-        is_file: true
-      file_name:
-        type: string
-      file_size:
-        type: integer
-      file_md5sum:
-        type: string
-      # the follow params are optional
-      idx_object_id:
-        type: string
-      idx_file:
-        type: string
-        is_file: true
-      idx_file_name:
-        type: string
-      idx_file_size:
-        type: integer
-      idx_file_md5sum:
-        type: string
-"""
-bundle_id = task_dict.get('input').get('bundle_id')
-object_id = task_dict.get('input').get('object_id')
-file_ = task_dict.get('input').get('file')
-file_name = task_dict.get('input').get('file_name')
-file_size = task_dict.get('input').get('file_size')
-file_md5sum = task_dict.get('input').get('file_md5sum')
-
-idx_object_id = task_dict.get('input').get('idx_object_id')
-idx_file = task_dict.get('input').get('idx_file')
-idx_file_name = task_dict.get('input').get('idx_file_name')
-idx_file_size = task_dict.get('input').get('idx_file_size')
-idx_file_md5sum = task_dict.get('input').get('idx_file_md5sum')
+save_output_json(task_dict)
 
 
-task_start = int(time.time())
-
-# do the real work here
-cmd = 'upload_file_to_collab.py'
-
-try:
-    #metadata step
-    if file_.endswith('.xml'):
-        print subprocess.check_output(['aws', '--profile', 'collab', '--endpoint-url', 'https://object.cancercollaboratory.org:9080', 's3', 'cp', file_, os.path.join('s3://oicr.icgc.meta/metadata/', object_id)])
-
-    r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, file_, bundle_id, object_id, file_md5sum), shell=True)
-except Exception, e:
-    with open('jt.log', 'w') as f: f.write(str(e))
-    sys.exit(1)  # task failed
-
-# index exist
-if idx_object_id:
-    try:
-        r = subprocess.check_output("%s -i %s -g %s -id %s -md5 %s" % (cmd, idx_file, bundle_id, idx_object_id, idx_file_md5sum), shell=True)
-    except Exception, e:
-        with open('jt.log', 'w') as f: f.write(str(e))
-        sys.exit(1)  # task failed
+payload = task_dict.get('input').get('payload')
+input_directory = task_dict.get('input').get('input_directory')
+study_id = task_dict.get('input').get('study_id')
 
 
-# complete the task
-task_stop = int(time.time())
+manifest = upload_file(input_directory, study_id, payload)
 
-output_json = {
-    'runtime': {
-        'task_start': task_start,
-        'task_stop': task_stop
-    }
-}
-
-save_output_json(output_json)
+save_output_json({
+    'manifest': manifest
+})

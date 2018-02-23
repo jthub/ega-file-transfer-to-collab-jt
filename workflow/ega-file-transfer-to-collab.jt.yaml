@@ -46,6 +46,18 @@ workflow:
       type: string
     ega_metadata_object_id:  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
       type: string
+    donor_gender:
+      type: string
+    submitter_donor_id:
+      type: string
+    reference_genome:
+      type: string
+    submitter_specimen_type:
+      type: string
+    submitter_sample_id:
+      type: string
+    specimen_submitter_id:
+      type: string
     files:
       type: array
       items:
@@ -56,8 +68,6 @@ workflow:
           file_name:
             type: string
           file_md5sum:
-            type: string
-          object_id:  # this is the object_id obtained from ICGC service using bundle_id and file_name as input
             type: string
           idx_file_name:
             type: string
@@ -106,6 +116,29 @@ workflow:
         out_dir: out_dir@download
       depends_on:
       - completed@generate_bai
+    generate_song_payload:
+      tool: generate_song_payload
+      input:
+        input_dir: out_dir@download
+        files: files
+        metadata_file_name: ega_metadata_file_name
+        analysis_id: bundle_id
+        analysis_type: ega_analysis_type
+        donor_gender: donor_gender
+        donor_submitter_id: submitter_donor_id
+        library_strategy: library_strategy
+        reference_genome: reference_genome
+        specimen_type: submitter_specimen_type
+        specimen_submitter_id: specimen_submitter_id
+        sample_submitter_id: submitter_sample_id
+      depends_on:
+      - completed@prepare_metadata_xml
+      - completed@generate_bai
+    upload:
+      tool: update
+      input:
+        input_dir: out_dir@download
+        payload: payload@generate_song
     #xml_upload_to_aws:
     #  tool: upload_to_aws
     #  input:
@@ -233,6 +266,19 @@ tools:
         type: string
       files:
         type: array
+
+  generate_song_payload:
+    command: generate_song_payload.py
+    input:
+      input_dir:
+        type: string
+      files:
+        type: array
+      metadata_file_name:
+        type: string
+    output:
+       payload:
+        type: string
 
   upload:
     command: upload.py
