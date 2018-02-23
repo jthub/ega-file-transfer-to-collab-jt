@@ -140,6 +140,9 @@ workflow:
         input_dir: out_dir@download
         payload: payload@generate_song
         study_id: project_code
+      depends_on:
+      - completed@download
+      - completed@generate_song_payload
     #xml_upload_to_aws:
     #  tool: upload_to_aws
     #  input:
