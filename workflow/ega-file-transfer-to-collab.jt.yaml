@@ -134,11 +134,11 @@ workflow:
       depends_on:
       - completed@prepare_metadata_xml
       - completed@generate_bai
-    upload:
-      tool: update
-      input:
-        input_dir: out_dir@download
-        payload: payload@generate_song
+    #upload:
+    #  tool: update
+    #  input:
+    #    input_dir: out_dir@download
+    #    payload: payload@generate_song
     #xml_upload_to_aws:
     #  tool: upload_to_aws
     #  input:
@@ -275,6 +275,24 @@ tools:
       files:
         type: array
       metadata_file_name:
+        type: string
+      analysis_id:
+        type: string
+      analysis_type:
+        type: string
+      donor_gender:
+        type: string
+      donor_submitter_id:
+        type: string
+      library_strategy:
+        type: string
+      reference_genome:
+        type: string
+      specimen_type:
+        type: string
+      specimen_submitter_id:
+        type: string
+      sample_submitter_id:
         type: string
     output:
        payload:
