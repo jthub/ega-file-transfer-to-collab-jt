@@ -14,7 +14,7 @@ save_output_json(task_dict)
 
 
 payload = task_dict.get('input').get('payload')
-input_directory = task_dict.get('input').get('input_directory')
+input_dir = task_dict.get('input').get('input_dir')
 study_id = task_dict.get('input').get('study_id')
 
 
@@ -32,7 +32,7 @@ def upload_file(input_directory, study_id, payload):
     return json.load(open(os.path.join(input_directory,'manifest.json')))
 
 
-manifest = upload_file(input_directory, study_id, payload)
+manifest = upload_file(input_dir, study_id, payload)
 
 save_output_json({
     'manifest': manifest

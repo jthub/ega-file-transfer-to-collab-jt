@@ -32,3 +32,14 @@ for file in files:
         except Exception, e:
             with open('jt.log', 'w') as f: f.write(str(e))
             sys.exit(1)  # task failed
+
+task_stop = int(time.time())
+
+output_json = {
+    'runtime': {
+        'task_start': task_start,
+        'task_stop': task_stop
+    }
+}
+
+save_output_json(output_json)

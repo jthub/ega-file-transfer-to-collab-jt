@@ -95,5 +95,5 @@ song_payload.add_file_payload(FilePayload(file_access='controlled',
 song_payload.to_json_file(output_file)
 
 save_output_json({
-    'payload': output_file
+    'payload': 'payload.json'
 })
