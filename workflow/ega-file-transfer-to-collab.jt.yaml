@@ -134,11 +134,12 @@ workflow:
       depends_on:
       - completed@prepare_metadata_xml
       - completed@generate_bai
-    #upload:
-    #  tool: update
-    #  input:
-    #    input_dir: out_dir@download
-    #    payload: payload@generate_song
+    upload:
+      tool: upload
+      input:
+        input_dir: out_dir@download
+        payload: payload@generate_song
+        study_id: project_code
     #xml_upload_to_aws:
     #  tool: upload_to_aws
     #  input:

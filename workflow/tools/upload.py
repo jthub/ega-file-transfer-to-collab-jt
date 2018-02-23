@@ -6,7 +6,17 @@ import subprocess
 from utils import get_task_dict, save_output_json, get_md5
 import sys
 
-import shutil
+
+task_dict = get_task_dict(sys.argv[1])
+cwd = os.getcwd()
+
+save_output_json(task_dict)
+
+
+payload = task_dict.get('input').get('payload')
+input_directory = task_dict.get('input').get('input_directory')
+study_id = task_dict.get('input').get('study_id')
+
 
 def upload_file(input_directory, study_id, payload):
     upload_container = "quay.io/baminou/dckr_song_upload"
@@ -20,17 +30,6 @@ def upload_file(input_directory, study_id, payload):
                              '-o','manifest.txt','-j','manifest.json',
                              '-d', '/app/'])
     return json.load(open(os.path.join(input_directory,'manifest.json')))
-
-
-task_dict = get_task_dict(sys.argv[1])
-cwd = os.getcwd()
-
-save_output_json(task_dict)
-
-
-payload = task_dict.get('input').get('payload')
-input_directory = task_dict.get('input').get('input_directory')
-study_id = task_dict.get('input').get('study_id')
 
 
 manifest = upload_file(input_directory, study_id, payload)

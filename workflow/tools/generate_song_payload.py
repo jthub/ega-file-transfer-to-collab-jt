@@ -81,8 +81,8 @@ for file in files:
         song_payload.add_file_payload(FilePayload(file_access='controlled',
                                   file_name=idx_file,
                                   md5sum = hashlib.md5(open(idx_file_path, 'rb').read()).hexdigest(),
-                                  file_type=idx_file_path(idx_file),
-                                  file_size=os.stat(file_path).st_size))
+                                  file_type=get_file_type(idx_file),
+                                  file_size=os.stat(idx_file_path).st_size))
 
 file_path = os.path.join(input_dir, metadata_file_name)
 song_payload.add_file_payload(FilePayload(file_access='controlled',
