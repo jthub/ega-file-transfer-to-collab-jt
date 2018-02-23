@@ -302,31 +302,13 @@ tools:
   upload:
     command: upload.py
     input:
-      bundle_id:
+      input_dir:
         type: string
-      object_id:
+      files:
+        type: array
+      study_id:
         type: string
-      file:
-        type: string
-        is_file: true
       file_name:
-        type: string
-      file_size:
-        type: integer
-      file_md5sum:
-        type: string
-      # the follow params are optional
-      idx_object_id:
-        type: string
-      idx_file:
-        type: string
-        is_file: true
-      idx_file_name:
-        type: string
-      idx_file_size:
-        type: integer
-      idx_file_md5sum:
-        type: string
 
   upload_to_aws:
     command: upload_to_aws.py
