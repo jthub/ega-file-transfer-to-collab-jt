@@ -246,15 +246,6 @@ tools:
       out_dir:
         type: string
 
-  md5sum_check:
-    command: md5sum_check.py
-    input:
-      file:  # new field
-        type: string
-        is_file: true
-      file_md5sum:
-        type: string
-
   decryption:
     command: decryption.py
     input:

@@ -26,9 +26,9 @@ task_start = int(time.time())
 
 for file in files:
     # only invoke bai generation when the job has information of index file
-    if file.get('idx_file_name'):
+    if file.get('file_name').endswith('.bam'):
         try:
-            subprocess.check_output(['generate_bai_from_bam.py','-i',os.path.join(input_dir, file.get('file_name')),'-o',os.path.join(input_dir, file.get('idx_file_name'))])
+            subprocess.check_output(['samtools','index','-b',os.path.join(input_dir, file.get('file_name'))])
         except Exception, e:
             with open('jt.log', 'w') as f: f.write(str(e))
             sys.exit(1)  # task failed
