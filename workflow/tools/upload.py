@@ -24,7 +24,10 @@ def upload_file(input_directory, study_id, payload):
 
     subprocess.check_output(['docker', 'pull', upload_container])
 
-    subprocess.check_output(['docker','run','-e','ACCESSTOKEN',
+    subprocess.check_output(['docker','run',
+                             '-e','ACCESSTOKEN',
+                             '-e','STORAGEURL=http://10.10.0.210:8087',
+                             '-e','METADATAURL=http://10.10.0.210:8080',
                              '-v', input_directory+':/app',upload_container, 'upload','-s',study_id,
                              '-u', song_server, '-p', '/app/'+payload,
                              '-o','manifest.txt','-j','manifest.json',
