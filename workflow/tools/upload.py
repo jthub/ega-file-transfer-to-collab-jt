@@ -12,7 +12,6 @@ cwd = os.getcwd()
 
 save_output_json(task_dict)
 
-
 payload = task_dict.get('input').get('payload')
 input_dir = task_dict.get('input').get('input_dir')
 study_id = task_dict.get('input').get('study_id')
@@ -20,15 +19,16 @@ study_id = task_dict.get('input').get('study_id')
 
 def upload_file(input_directory, study_id, payload):
     upload_container = "quay.io/baminou/dckr_song_upload"
-    song_server = 'http://142.1.177.168:8080'
+    song_server = os.environ.get('SONGSERVER_URL')
 
     subprocess.check_output(['docker', 'pull', upload_container])
 
     subprocess.check_output(['docker','run',
                              '-e','ACCESSTOKEN',
-                             '-e','STORAGEURL=http://10.10.0.210:8087',
-                             '-e','METADATAURL=http://10.10.0.210:8080',
-                             '-v', input_directory+':/app',upload_container, 'upload','-s',study_id,
+                             '-e','STORAGEURL='+os.environ.get('STORAGEURL_COLLAB'),
+                             '-e','METADATAURL='+os.environ.get('METADATAURL_COLLAB'),
+                             '-v', input_directory+':/app',upload_container,
+                             'upload','-s',study_id,
                              '-u', song_server, '-p', '/app/'+payload,
                              '-o','manifest.txt','-j','manifest.json',
                              '-d', '/app/'])
