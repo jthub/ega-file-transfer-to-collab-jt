@@ -24,6 +24,7 @@ def upload_file(input_directory, study_id, payload):
     subprocess.check_output(['docker', 'pull', upload_container])
 
     subprocess.check_output(['docker','run',
+                             '--net=host'
                              '-e','ACCESSTOKEN',
                              '-e','STORAGEURL='+os.environ.get('STORAGEURL_COLLAB'),
                              '-e','METADATAURL='+os.environ.get('METADATAURL_COLLAB'),
