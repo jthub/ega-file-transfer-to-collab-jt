@@ -29,10 +29,11 @@ if run:
         subprocess.check_output(['docker', 'pull', download_container])
 
         for file in manifest.get('files'):
-            subprocess.check_output(['docker', 'run', download_container,
+            subprocess.check_output(['docker', 'run',
                                      '-e', 'ACCESSTOKEN',
                                      '-e', 'STORAGEURL=' + os.environ.get('STORAGEURL_AWS'),
                                      '-e', 'METADATAURL=' + os.environ.get('METADATAURL_AWS'),
+                                     download_container,
                                      '-id', file.get('object_id'), '-o', tmp_dir])
             if not os.path.isfile(tmp_dir + "/" + file.get('file_name')):
                 task_info = "Error: File " + file.get('object_id') + ":" + file.get(

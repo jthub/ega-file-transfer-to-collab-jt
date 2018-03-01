@@ -29,10 +29,19 @@ project_code = task_dict.get('input').get('project_code')
 
 task_start = int(time.time())
 
+download_container = "quay.io/baminou/dckr_download_ega_file"
+subprocess.check_output(['docker', 'pull', download_container])
+
 for _file in files:
     try:
         if project_code in ['LINC-JP', 'BTCA-JP']:
-            r = subprocess.check_output(['download_ega_file.py','-p',project_code,'-f', str(_file.get('ega_file_id'))[-2:]+"/"+_file.get('ega_file_id')+".aes", '-o', _file.get('file_name')+'.aes'])
+            r = subprocess.check_output(['docker','run',
+                                         '-e', 'ASCP_EGA_HOST',
+                                         '-e', 'ASCP_EGA_USER',
+                                         '-e', 'ASPERA_SCP_PASS',
+                                         '-v', cwd+':/app',
+                                         download_container,
+                                         '-p',project_code,'-f', str(_file.get('ega_file_id'))[-2:]+"/"+_file.get('ega_file_id')+".aes", '-o', _file.get('file_name')+'.aes'])
         else:
             r = subprocess.check_output(['download_ega_file.py','-p',project_code,'-f', _file.get('ega_file_id')+".aes", '-o', _file.get('file_name')+'.aes'])
     except Exception, e:
