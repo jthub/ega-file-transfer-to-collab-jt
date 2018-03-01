@@ -155,13 +155,13 @@ workflow:
     qc_from_collab:
       tool: qc_from_collab
       input:
-        manifest: upload@manifest
+        manifest: manifest@upload
       depends_on:
       - completed@upload
     qc_from_aws:
       tool: qc_from_aws
       input:
-        manifest: upload@manifest
+        manifest: manifest@upload
         study_id: project_code
       depends_on:
       - completed@upload_to_aws
