@@ -49,7 +49,7 @@ if run:
                                     '-e', 'AWS_SECRET_ACCESS_KEY',
                                      '-v', input_dir+'/project',
                                      'mesosphere/aws-cli', 's3', 'cp',
-                                     os.path.join('/project',os.path.basename(file.get('name'))),
+                                     os.path.join('/project',os.path.basename(file.get('file_name'))),
                                      os.path.join('s3://oicr.icgc.meta/metadata/', file.get('object_id'))])
 
 
