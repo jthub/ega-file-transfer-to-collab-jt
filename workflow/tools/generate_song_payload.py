@@ -12,6 +12,7 @@ from overture_song_payload import SongPayload
 import sys
 import os
 import hashlib
+import json
 
 task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
@@ -95,5 +96,6 @@ song_payload.add_file_payload(FilePayload(file_access='controlled',
 song_payload.to_json_file(output_file)
 
 save_output_json({
-    'payload': 'payload.json'
+    'payload': 'payload.json',
+    'payload_json': json.load(open(os.path.join(input_dir,'payload.json')))
 })

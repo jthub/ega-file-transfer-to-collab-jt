@@ -10,8 +10,6 @@ import sys
 task_dict = get_task_dict(sys.argv[1])
 cwd = os.getcwd()
 
-save_output_json(task_dict)
-
 payload = task_dict.get('input').get('payload')
 input_dir = task_dict.get('input').get('input_dir')
 study_id = task_dict.get('input').get('study_id')
@@ -24,7 +22,7 @@ def upload_file(input_directory, study_id, payload):
     subprocess.check_output(['docker', 'pull', upload_container])
 
     subprocess.check_output(['docker','run',
-                             '--net=host'
+                             '--net=host',
                              '-e','ACCESSTOKEN',
                              '-e','STORAGEURL='+os.environ.get('STORAGEURL_COLLAB'),
                              '-e','METADATAURL='+os.environ.get('METADATAURL_COLLAB'),
