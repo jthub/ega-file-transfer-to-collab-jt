@@ -25,7 +25,7 @@ run = study_id in allowed_codes
 if run:
 
     upload_container = "quay.io/baminou/dckr_song_upload"
-    song_server = os.environ.get('SONGSERVER_URL')
+    song_server = os.environ.get('SONG_SERVER_AWS')
 
     subprocess.check_output(['docker', 'pull', upload_container])
 
@@ -41,16 +41,16 @@ if run:
                              '-d', '/app/'])
     manifest = json.load(open(os.path.join(input_dir,'manifest.json')))
 
-    subprocess.check_output(['docker','pull','mesosphere/aws-cli'])
-    for file in manifest.get('files'):
-        if file.get('file_name').endswith('.xml'):
-            subprocess.check_output(['docker', 'run',
-                                    '-e','AWS_ACCESS_KEY_ID',
-                                    '-e', 'AWS_SECRET_ACCESS_KEY',
-                                     '-v', input_dir+'/project',
-                                     'mesosphere/aws-cli', 's3', 'cp',
-                                     os.path.join('/project',os.path.basename(file.get('file_name'))),
-                                     os.path.join('s3://oicr.icgc.meta/metadata/', file.get('object_id'))])
+#    subprocess.check_output(['docker','pull','mesosphere/aws-cli'])
+#    for file in manifest.get('files'):
+#        if file.get('file_name').endswith('.xml'):
+#            subprocess.check_output(['docker', 'run',
+#                                    '-e','AWS_ACCESS_KEY_ID',
+#                                    '-e', 'AWS_SECRET_ACCESS_KEY',
+#                                     '-v', input_dir+':/project',
+#                                     'mesosphere/aws-cli', 's3', 'cp',
+#                                     os.path.join('/project',os.path.basename(file.get('file_name'))),
+#                                     os.path.join('s3://oicr.icgc.meta/metadata/', file.get('object_id'))])
 
 
 task_stop = int(time.time())
@@ -58,6 +58,7 @@ task_stop = int(time.time())
 
 output_json = {
     'allowed_upload': run,
+    'manifest': manifest,
     'runtime': {
         'task_start': task_start,
         'task_stop': task_stop

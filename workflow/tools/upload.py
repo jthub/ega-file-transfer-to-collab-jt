@@ -16,7 +16,7 @@ study_id = task_dict.get('input').get('study_id')
 
 
 upload_container = "quay.io/baminou/dckr_song_upload"
-song_server = os.environ.get('SONGSERVER_URL')
+song_server = os.environ.get('SONG_SERVER_COLLAB')
 
 subprocess.check_output(['docker', 'pull', upload_container])
 
@@ -33,16 +33,16 @@ subprocess.check_output(['docker','run',
 manifest = json.load(open(os.path.join(input_dir,'manifest.json')))
 
 
-subprocess.check_output(['docker', 'pull', 'mesosphere/aws-cli'])
-for file in manifest.get('files'):
-    if file.get('file_name').endswith('.xml'):
-        subprocess.check_output(['docker', 'run',
-                                 '-e', 'AWS_ACCESS_KEY_ID='+os.environ.get('COLLAB_ACCESS_KEY_ID'),
-                                 '-e', 'AWS_SECRET_ACCESS_KEY='+os.environ.get('COLLAB_SECRET_ACCESS_KEY'),
-                                 '-v', input_dir + '/project',
-                                 'mesosphere/aws-cli', 's3', 'cp',
-                                 os.path.join('/project', os.path.basename(file.get('file_name'))),
-                                 os.path.join('https://object.cancercollaboratory.org:9080', file.get('object_id'))])
+#subprocess.check_output(['docker', 'pull', 'mesosphere/aws-cli'])
+#for file in manifest.get('files'):
+#    if file.get('file_name').endswith('.xml'):
+#        subprocess.check_output(['docker', 'run',
+#                                 '-e', 'AWS_ACCESS_KEY_ID='+os.environ.get('COLLAB_ACCESS_KEY_ID'),
+#                                 '-e', 'AWS_SECRET_ACCESS_KEY='+os.environ.get('COLLAB_SECRET_ACCESS_KEY'),
+#                                 '-v', input_dir + ':/project',
+#                                 'mesosphere/aws-cli', 's3', 'cp',
+#                                 os.path.join('/project', os.path.basename(file.get('file_name'))),
+#                                 os.path.join('https://object.cancercollaboratory.org:9080', file.get('object_id'))])
 
 save_output_json({
     'manifest': manifest
