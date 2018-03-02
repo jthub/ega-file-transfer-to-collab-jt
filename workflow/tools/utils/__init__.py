@@ -23,3 +23,10 @@ def get_md5(fname):
         for chunk in iter(lambda: f.read(1024*256), ""):
             hash.update(chunk)
     return hash.hexdigest()
+
+def is_aligned(analysis_id, reference_genome, files):
+    for file in files:
+        if file.get('file_name').endswith('.bam')\
+                and 'EGAZ' in analysis_id and reference_genome is not None:
+            return True
+    return False

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from utils import get_task_dict, save_output_json
+from utils import get_task_dict, save_output_json, is_aligned
 
 from overture_song_payload import DonorPayload
 from overture_song_payload import ExperimentPayload
@@ -30,6 +30,8 @@ reference_genome = task_dict.get('input').get('reference_genome')
 specimen_type = task_dict.get('input').get('specimen_type')
 submitter_specimen_id = task_dict.get('input').get('submitter_specimen_id')
 sample_submitter_id = task_dict.get('input').get('sample_submitter_id')
+study_id = task_dict.get('input').get('study_id')
+
 sample_type = 'DNA'
 
 
@@ -47,18 +49,11 @@ def get_specimen_class(specimen_type):
         return 'Normal'
     return 'Tumor'
 
-def is_aligned(files):
-    for file in files:
-        if file.get('file_name').endswith('.fastq'):
-            return False
-        if file.get('file_name').endswith('.bam'):
-            return True
-
 
 
 
 output_file = os.path.join(input_dir,'payload.json')
-experiment_payload = ExperimentPayload(aligned=is_aligned(files), library_strategy=library_strategy, reference_genome=reference_genome)
+experiment_payload = ExperimentPayload(aligned=is_aligned(analysis_id, reference_genome, files), library_strategy=library_strategy, reference_genome=reference_genome)
 song_payload = SongPayload(analysis_id=analysis_id, analysis_type='sequencingRead', experiment_payload=experiment_payload)
 donor_payload = DonorPayload(donor_gender=donor_gender, donor_submitter_id=donor_submitter_id)
 specimen_payload = SpecimenPayload(specimen_class=get_specimen_class(specimen_type),
@@ -67,6 +62,7 @@ sample_payload = SamplePayload(donor_payload=donor_payload, sample_submitter_id=
 
 song_payload.add_sample_payload(sample_payload)
 song_payload.add_info('isPcawg', False)
+song_payload.add_info('dcc_project_code', study_id)
 
 for file in files:
     file_path = os.path.join(input_dir, file.get('file_name'))
@@ -86,7 +82,7 @@ for file in files:
                                   file_size=os.stat(idx_file_path).st_size))
 
 file_path = os.path.join(input_dir, metadata_file_name)
-song_payload.add_file_payload(FilePayload(file_access='controlled',
+song_payload.add_file_payload(FilePayload(file_access='opened',
                           file_name=metadata_file_name,
                           md5sum=hashlib.md5(open(file_path, 'rb').read()).hexdigest(),
                           file_type=get_file_type(metadata_file_name),

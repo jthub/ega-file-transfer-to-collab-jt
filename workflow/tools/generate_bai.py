@@ -5,7 +5,7 @@ import sys
 import json
 import time
 from random import randint
-from utils import get_task_dict, save_output_json, get_md5
+from utils import get_task_dict, save_output_json, get_md5, is_aligned
 import subprocess
 
 
@@ -21,12 +21,14 @@ cwd = os.getcwd()
 """
 files = task_dict.get('input').get('files')
 input_dir = task_dict.get('input').get('input_dir')
+analysis_id = task_dict.get('input').get('analysis_id')
+reference_genome = task_dict.get('input').get('reference_genome')
 
 task_start = int(time.time())
 
 for file in files:
     # only invoke bai generation when the job has information of index file
-    if file.get('file_name').endswith('.bam'):
+    if is_aligned(analysis_id, reference_genome, files):
         try:
             subprocess.check_output(['samtools','index',os.path.join(input_dir, file.get('file_name'))])
         except Exception, e:

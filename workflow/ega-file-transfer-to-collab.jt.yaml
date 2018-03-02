@@ -98,6 +98,8 @@ workflow:
       input:
         input_dir: out_dir@download
         files: files
+        analysis_id: bundle_id
+        reference_genome: reference_genome
       depends_on:
       - completed@decryption
     prepare_metadata_xml:
@@ -131,6 +133,7 @@ workflow:
         specimen_type: submitter_specimen_type
         submitter_specimen_id: submitter_specimen_id
         sample_submitter_id: submitter_sample_id
+        study_id: project_code
       depends_on:
       - completed@prepare_metadata_xml
       - completed@generate_bai
@@ -223,6 +226,10 @@ tools:
         type: string
       files:
         type: array
+      analysis_id:
+        type: string
+      reference_genome:
+        type: string
 
   generate_song_payload:
     command: generate_song_payload.py
@@ -250,6 +257,8 @@ tools:
       submitter_specimen_id:
         type: string
       sample_submitter_id:
+        type: string
+      study_id:
         type: string
     output:
        payload:
