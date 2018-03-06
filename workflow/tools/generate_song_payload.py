@@ -47,7 +47,7 @@ def get_file_type(fname):
 def get_specimen_class(specimen_type):
     if 'normal' in specimen_type.lower():
         return 'Normal'
-    return 'Tumor'
+    return 'Tumour'
 
 
 
