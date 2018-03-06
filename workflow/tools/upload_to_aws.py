@@ -22,6 +22,8 @@ study_id = task_dict.get('input').get('study_id')
 task_start = int(time.time())
 run = study_id in allowed_codes
 
+manifest=''
+
 if run:
 
     upload_container = "quay.io/baminou/dckr_song_upload"

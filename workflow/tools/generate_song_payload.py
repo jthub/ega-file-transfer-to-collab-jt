@@ -82,7 +82,7 @@ for file in files:
                                   file_size=os.stat(idx_file_path).st_size))
 
 file_path = os.path.join(input_dir, metadata_file_name)
-song_payload.add_file_payload(FilePayload(file_access='opened',
+song_payload.add_file_payload(FilePayload(file_access='open',
                           file_name=metadata_file_name,
                           md5sum=hashlib.md5(open(file_path, 'rb').read()).hexdigest(),
                           file_type=get_file_type(metadata_file_name),
