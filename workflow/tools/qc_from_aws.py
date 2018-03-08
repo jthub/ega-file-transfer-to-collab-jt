@@ -19,6 +19,7 @@ run = study_id in allowed_codes
 
 task_start = int(time.time())
 task_info = ''
+cwd = os.getcwd()
 
 if run:
 
@@ -54,7 +55,8 @@ output_json = {
         'task_start': task_start,
         'task_stop': task_stop,
     },
-    'task_info': task_info
+    'task_info': task_info,
+    'out_dir': cwd
 }
 
 save_output_json(output_json)
