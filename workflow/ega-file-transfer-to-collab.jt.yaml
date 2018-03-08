@@ -168,6 +168,18 @@ workflow:
         study_id: project_code
       depends_on:
       - completed@upload_to_aws
+    delete_directory:
+      tool: delete_directory
+      input:
+        input_dir: out_dir@download
+    delete_directory:
+      tool: delete_directory
+      input:
+        input_dir: out_dir@qc_from_collab
+    delete_directory:
+      tool: delete_directory
+      input:
+        input_dir: out_dir@qc_from_aws
 
 
 
@@ -301,10 +313,9 @@ tools:
       study_id:
         type: string
 
-  delete_file:
-    command: delete_file.py
+  delete_directory:
+    command: delete_directory.py
     input:
-      file:
+      input_dir:
         type: string
-        is_file: true
 

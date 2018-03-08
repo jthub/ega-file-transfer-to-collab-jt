@@ -64,7 +64,8 @@ output_json = {
     'runtime': {
         'task_start': task_start,
         'task_stop': task_stop
-    }
+    },
+    'out_dir': cwd
 }
 
 save_output_json(output_json)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import shutil
 import sys
 import json
 import time
@@ -12,11 +13,10 @@ cwd = os.getcwd()
 
 """
     input:
-      file:
+      input_dir:
         type: string
         is_file: true
 """
-file_name = task_dict.get('input').get('file_name')
 input_dir = task_dict.get('input').get('input_dir')
 
 task_start = int(time.time())
@@ -25,7 +25,7 @@ task_start = int(time.time())
 task_info = ''
 
 try:
-    os.remove(os.path.join(input_dir,file_name))
+    shutil.rmtree(input_dir)
 except:
     pass
 # complete the task

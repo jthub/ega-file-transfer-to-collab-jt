@@ -13,6 +13,8 @@ manifest = task_dict.get('input').get('manifest')
 task_start = int(time.time())
 task_info = ''
 
+cwd = os.getcwd()
+
 try:
     download_container = "quay.io/baminou/dckr_icgc_download"
     subprocess.check_output(['docker', 'pull', download_container])
@@ -23,17 +25,17 @@ try:
                                  '-e', 'ACCESSTOKEN',
                                  '-e', 'STORAGEURL=' + os.environ.get('STORAGEURL_COLLAB'),
                                  '-e', 'METADATAURL=' + os.environ.get('METADATAURL_COLLAB'),
-                                 '-v', os.getcwd()+':/app',
+                                 '-v', cwd+':/app',
                                  download_container,
                                  '-id',file.get('object_id'), '-o', '/app'])
 
-        if not os.path.isfile(file.get('file_name')):
-            task_info = "Error: File "+file.get('object_id')+":"+file.get('file_name')+" couldn't be downloaded from collab."
+        if not os.path.isfile(os.path.join(cwd,os.path.basename(file.get('file_name')))):
+            task_info = "Error: File "+file.get('object_id')+":"+os.path.basename(file.get('file_name'))+" couldn't be downloaded from collab."
         else:
-            if not get_md5(file.get('file_name')) == file.get('file_md5sum'):
-                task_info = "Error: File " + file.get('object_id') + ":" + file.get('file_name') + " does not have matchind md5 sum."
+            if not get_md5(os.path.join(cwd,os.path.basename(file.get('file_name')))) == file.get('file_md5sum'):
+                task_info = "Error: File " + file.get('object_id') + ":" + file.get('file_name') + " does not have matching md5 sum."
             else:
-                os.remove(file.get('file_name'))
+                os.remove(os.path.join(cwd,os.path.basename(file.get('file_name'))))
 except Exception, e:
     task_info = "Error: "+str(e)
 
@@ -44,7 +46,8 @@ output_json = {
         'task_start': task_start,
         'task_stop': task_stop,
     },
-    'task_info': task_info
+    'task_info': task_info,
+    'out_dir': cwd
 }
 
 save_output_json(output_json)
