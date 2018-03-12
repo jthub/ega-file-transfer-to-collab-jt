@@ -27,6 +27,8 @@ task_start = int(time.time())
 
 decrypt_container = "quay.io/baminou/dckr_ega_decrypt"
 
+subprocess.check_output(['docker', 'pull', decrypt_container])
+
 for _file in files:
     try:
         file_name = os.path.join('/app', _file.get('file_name'))
