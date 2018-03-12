@@ -44,17 +44,22 @@ out_dir = task_dict.get('input').get('out_dir')
 # do the real work here
 task_start = int(time.time())
 
+metadata_container = "quay.io/baminou/dckr_prepare_metadata_xml"
+subprocess.check_output(['docker', 'pull', metadata_container])
+
 try:
-    subprocess.check_output(['prepare_ega_xml_audit.py',
-      '-i',ega_metadata_repo,
-      '-p',project_code,
-      '-o',os.path.join(out_dir,output_file),
-      '-d',ega_dataset_id,
-      '-a',ega_analysis_id if ega_analysis_id else '',
-      '-e',ega_expriment_id if ega_expriment_id else '',
-      '-r',ega_run_id if ega_run_id else '',
-      '-sa',ega_sample_id if ega_sample_id else '',
-      '-st',ega_study_id if ega_study_id else ''])
+    subprocess.check_output(['docker','run',
+                             '-v', out_dir + ':/app',
+                             metadata_container,
+                              '-i',ega_metadata_repo,
+                              '-p',project_code,
+                              '-o',os.path.join('/app',output_file),
+                              '-d',ega_dataset_id,
+                              '-a',ega_analysis_id if ega_analysis_id else '',
+                              '-e',ega_expriment_id if ega_expriment_id else '',
+                              '-r',ega_run_id if ega_run_id else '',
+                              '-sa',ega_sample_id if ega_sample_id else '',
+                              '-st',ega_study_id if ega_study_id else ''])
 
 except Exception, e:
     with open('jt.log', 'w') as f: f.write(str(e))
