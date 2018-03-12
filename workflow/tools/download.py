@@ -42,7 +42,7 @@ for _file in files:
                                          '-v', cwd+':/app',
                                          download_container,
                                          '-p',project_code,'-f', str(_file.get('ega_file_id'))[-2:]+"/"+_file.get('ega_file_id')+".aes",
-                                         '-o', _file.get('file_name')+'.aes'])
+                                         '-o', os.path.join('/app',_file.get('file_name')+'.aes')])
         else:
             r = subprocess.check_output(['docker','run',
                                          '-e', 'ASCP_EGA_HOST',
@@ -50,7 +50,8 @@ for _file in files:
                                          '-e', 'ASPERA_SCP_PASS',
                                          '-v', cwd + ':/app',
                                          download_container,
-                                         '-p',project_code,'-f', _file.get('ega_file_id')+".aes", '-o', _file.get('file_name')+'.aes'])
+                                         '-p',project_code,'-f', _file.get('ega_file_id')+".aes",
+                                         '-o',os.path.join('/app',_file.get('file_name')+'.aes')])
     except Exception, e:
         with open('jt.log', 'w') as f: f.write(str(e))
         sys.exit(1)  # task failed
