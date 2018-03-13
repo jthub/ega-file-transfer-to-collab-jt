@@ -32,8 +32,8 @@ try:
         if not os.path.isfile(os.path.join(cwd,os.path.basename(file.get('file_name')))):
             task_info = "Error: File "+file.get('object_id')+":"+os.path.basename(file.get('file_name'))+" couldn't be downloaded from collab."
         else:
-            if not get_md5(os.path.join(cwd,os.path.basename(file.get('file_name')))) == file.get('file_md5sum'):
-                task_info = "Error: File " + file.get('object_id') + ":" + file.get('file_name') + " does not have matching md5 sum."
+            if not get_md5(os.path.join(cwd, os.path.basename(file.get('file_name')))) == file.get('md5'):
+                task_info = "Error: File " + file.get('object_id') + ":" + os.path.basename(file.get('file_name')) + " does not have matching md5 sum."
             else:
                 os.remove(os.path.join(cwd,os.path.basename(file.get('file_name'))))
 except Exception, e:
