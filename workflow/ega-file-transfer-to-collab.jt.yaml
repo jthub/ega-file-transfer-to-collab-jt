@@ -1,0 +1,321 @@
+#Demo workflow
+
+workflow:
+  name:  ega-file-transfer-to-collab
+  version: "0.6.11"
+  source_code: "https://github.com/icgc-dcc/ega-file-transfer-to-collab-jt"
+
+  runtime:
+    docker: null
+
+  execution:
+    constraint: same_worker  # other values: 'shared_fs' (not supported yet), 'same_host'
+    memory: 4g
+    cpu: 2
+
+  input:
+    project_code:
+      type: string
+    ega_study_id:
+      type: string
+    ega_dataset_id:
+      type: string
+    submitter_sample_id:
+      type: string
+    ega_sample_id:
+      type: string
+    icgc_sample_id:
+      type: string
+    submitter:
+      type: string
+    ega_analysis_id:  # null if it's experiment
+      type: string
+    ega_experiment_id:  # null if it's analysis
+      type: string
+    ega_run_id:  # null if it's analysis
+      type: string
+    bundle_type: # experiement or analysis
+      type: string
+    bundle_id:   # either EGAR or EGAX ID
+      type: string
+    library_strategy:
+      type: string
+    ega_metadata_repo:
+      type: string
+    ega_metadata_file_name:
+      type: string
+    ega_metadata_object_id:  # this is the object_id obtained from ICGC service using bundle_id and ega_metadata_file_name as input
+      type: string
+    donor_gender:
+      type: string
+    submitter_donor_id:
+      type: string
+    reference_genome:
+      type: string
+    submitter_specimen_type:
+      type: string
+    submitter_sample_id:
+      type: string
+    submitter_specimen_id:
+      type: string
+    files:
+      type: array
+      items:
+        type: object
+        properties:
+          ega_file_id:
+            type: string
+          file_name:
+            type: string
+          file_md5sum:
+            type: string
+          idx_file_name:
+            type: string
+          idx_object_id:
+            type: string
+
+  output: null  # we may not need this, does the workflow as a whole need some sort of output? or output from individual tasks is just fine
+
+  #completion_depends_on:  # do we need this? is it all tasks succeeded then it's completed
+  #- completed@upload
+
+  tasks:
+    download:
+      tool: download  # optional, if omitted tool name will be the same as task name
+      input:
+        project_code: project_code
+        files: files
+      depends_on: null
+    decryption:
+      tool: decryption  # optional, if omitted tool name will be the same as task name
+      input:
+        input_dir: out_dir@download
+        files: files
+      depends_on:
+      - completed@download
+    generate_bai:
+      tool: generate_bai  # optional, if omitted tool name will be the same as task name
+      input:
+        input_dir: out_dir@download
+        files: files
+        analysis_id: bundle_id
+        reference_genome: reference_genome
+      depends_on:
+      - completed@decryption
+    prepare_metadata_xml:
+      tool: prepare_metadata_xml
+      input:
+        ega_metadata_repo: ega_metadata_repo
+        project_code: project_code
+        bundle_id: bundle_id
+        ega_study_id: ega_study_id
+        ega_dataset_id: ega_dataset_id
+        ega_sample_id: ega_sample_id
+        ega_analysis_id: ega_analysis_id
+        ega_experiment_id: ega_experiment_id
+        ega_run_id: ega_run_id
+        ega_metadata_file_name: ega_metadata_file_name
+        out_dir: out_dir@download
+      depends_on:
+      - completed@generate_bai
+    generate_song_payload:
+      tool: generate_song_payload
+      input:
+        input_dir: out_dir@download
+        files: files
+        metadata_file_name: ega_metadata_file_name
+        analysis_id: bundle_id
+        analysis_type: ega_analysis_type
+        donor_gender: donor_gender
+        donor_submitter_id: submitter_donor_id
+        library_strategy: library_strategy
+        reference_genome: reference_genome
+        specimen_type: submitter_specimen_type
+        submitter_specimen_id: submitter_specimen_id
+        sample_submitter_id: submitter_sample_id
+        study_id: project_code
+      depends_on:
+      - completed@prepare_metadata_xml
+      - completed@generate_bai
+    upload:
+      tool: upload
+      input:
+        input_dir: out_dir@download
+        payload: payload@generate_song_payload
+        study_id: project_code
+      depends_on:
+      - completed@download
+      - completed@generate_song_payload
+    upload_to_aws:
+      tool: upload_to_aws
+      input:
+        input_dir: out_dir@download
+        payload: payload@generate_song_payload
+        study_id: project_code
+      depends_on:
+      - completed@download
+      - completed@generate_song_payload
+    qc_from_collab:
+      tool: qc_from_collab
+      input:
+        manifest: manifest@upload
+      depends_on:
+      - completed@upload
+    qc_from_aws:
+      tool: qc_from_aws
+      input:
+        manifest: manifest@upload
+        study_id: project_code
+      depends_on:
+      - completed@upload_to_aws
+    delete_directory:
+      tool: delete_directory
+      input:
+        input_dir: out_dir@download
+    delete_directory:
+      tool: delete_directory
+      input:
+        input_dir: out_dir@qc_from_collab
+    delete_directory:
+      tool: delete_directory
+      input:
+        input_dir: out_dir@qc_from_aws
+
+
+
+# A workflow is made up with one or more tools
+# Each tool can have its own docker imagine if desirable
+tools:
+  prepare_metadata_xml:  # make a new XML cancatenate original EGA XMLs: study, sample, analysis/(experiment and run)
+    command: prepare_metadata_xml.py
+    input:
+      ega_metadata_repo:
+        type: string
+      project_code:
+        type: string
+      bundle_id:  # EGAR or EGAZ ID
+        type: string
+      ega_study_id:
+        type: string
+      ega_dataset_id:
+        type: string
+      ega_sample_id:
+        type: string
+      ega_analysis_id:
+        type: string
+      ega_expriment_id:
+        type: string
+      ega_run_id:
+        type: string
+      ega_metadata_file_name:
+        type: string
+      out_dir:
+        type: string
+
+  download:
+    command: download.py
+    input:
+      project_code:
+        type: string
+      files:
+        type: array
+    output:
+      out_dir:
+        type: string
+
+  decryption:
+    command: decryption.py
+    input:
+      input_dir:
+        type: string
+      files:
+        type: array
+
+  generate_bai:
+    command: generate_bai.py
+    input:
+      input_dir:
+        type: string
+      files:
+        type: array
+      analysis_id:
+        type: string
+      reference_genome:
+        type: string
+
+  generate_song_payload:
+    command: generate_song_payload.py
+    input:
+      input_dir:
+        type: string
+      files:
+        type: array
+      metadata_file_name:
+        type: string
+      analysis_id:
+        type: string
+      analysis_type:
+        type: string
+      donor_gender:
+        type: string
+      donor_submitter_id:
+        type: string
+      library_strategy:
+        type: string
+      reference_genome:
+        type: string
+      specimen_type:
+        type: string
+      submitter_specimen_id:
+        type: string
+      sample_submitter_id:
+        type: string
+      study_id:
+        type: string
+    output:
+       payload:
+        type: string
+
+  upload:
+    command: upload.py
+    input:
+      input_dir:
+        type: string
+      payload:
+        type: string
+      study_id:
+        type: string
+
+  upload_to_aws:
+    command: upload_to_aws.py
+    input:
+      input_dir:
+        type: string
+      payload:
+        type: string
+      study_id:
+        type: string
+    output:
+      manifest:
+        type: object
+
+  qc_from_collab:
+    command: qc_from_collab.py
+    input:
+      manifest:
+        type: object
+
+  qc_from_aws:
+    command: qc_from_aws.py
+    input:
+      manifest:
+        type: object
+      study_id:
+        type: string
+
+  delete_directory:
+    command: delete_directory.py
+    input:
+      input_dir:
+        type: string
+

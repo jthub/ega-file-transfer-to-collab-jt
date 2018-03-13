@@ -16,22 +16,18 @@ cwd = os.getcwd()
         type: string
         is_file: true
 """
-file_ = task_dict.get('input').get('file')
+file_name = task_dict.get('input').get('file_name')
+input_dir = task_dict.get('input').get('input_dir')
 
 task_start = int(time.time())
 
 # do the real work here
 task_info = ''
 
-if file_:
-    try:
-        os.remove(file_)
-        task_info = 'File removed'
-    except:
-        task_info = "Error: failed to remove file '%s'" % file_
-else:
-    task_info = 'No file to remove, task skipped'
-
+try:
+    os.remove(os.path.join(input_dir,file_name))
+except:
+    pass
 # complete the task
 task_stop = int(time.time())
 
