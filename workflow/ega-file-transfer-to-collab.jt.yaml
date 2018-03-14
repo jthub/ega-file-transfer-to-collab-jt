@@ -168,18 +168,48 @@ workflow:
         study_id: project_code
       depends_on:
       - completed@upload_to_aws
-    delete_directory:
+    delete_directory_download:
       tool: delete_directory
       input:
         input_dir: out_dir@download
-    delete_directory:
+      depends_on:
+      - completed@download
+      - completed@decryption
+      - completed@generate_bai
+      - completed@prepare_metadata_xml
+      - completed@generate_song_payload
+      - completed@upload
+      - completed@upload_to_aws
+      - completed@qc_from_collab
+      - completed@qc_from_aws
+    delete_directory_collab:
       tool: delete_directory
       input:
         input_dir: out_dir@qc_from_collab
-    delete_directory:
+      depends_on:
+      - completed@download
+      - completed@decryption
+      - completed@generate_bai
+      - completed@prepare_metadata_xml
+      - completed@generate_song_payload
+      - completed@upload
+      - completed@upload_to_aws
+      - completed@qc_from_collab
+      - completed@qc_from_aws
+    delete_directory_qc:
       tool: delete_directory
       input:
         input_dir: out_dir@qc_from_aws
+      depends_on:
+      - completed@download
+      - completed@decryption
+      - completed@generate_bai
+      - completed@prepare_metadata_xml
+      - completed@generate_song_payload
+      - completed@upload
+      - completed@upload_to_aws
+      - completed@qc_from_collab
+      - completed@qc_from_aws
 
 
 
